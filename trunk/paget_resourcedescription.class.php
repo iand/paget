@@ -10,7 +10,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
 
   
   function is_valid() {
-    return !$this->is_empty();
+    return (array_key_exists($this->uri, $this->_index) );
   }
   
   function get_label() {

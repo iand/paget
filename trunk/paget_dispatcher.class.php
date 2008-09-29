@@ -106,8 +106,6 @@ class PAGET_Dispatcher {
     // Augment with describing document information
     $desc->add_resource_triple( $request->request_uri, RDF_TYPE, FOAF_DOCUMENT );
     $desc->add_resource_triple( $request->request_uri, FOAF_PRIMARYTOPIC, $request->resource_uri );
-    $desc->add_resource_triple( $request->resource_uri, RDFS_SEEALSO, $request->request_uri );
-    $desc->add_resource_triple( $request->resource_uri, FOAF_ISPRIMARYTOPICOF, $request->request_uri );
 
     if ( strlen($this->_config['rights_text']) > 0) {
       $desc->add_literal_triple( $request->request_uri, 'http://purl.org/dc/elements/1.1/rights', $this->_config['rights_text'] );

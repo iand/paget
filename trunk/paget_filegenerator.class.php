@@ -1,6 +1,6 @@
 <?php
 /*
-storedescribegenerator.class.php
+filegenerator.class.php
 Copyright (C) 2008 Ian Davis.
 
 This program is free software; you can redistribute it and/or modify it under the 
@@ -17,23 +17,18 @@ program; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
 Suite 330, Boston, MA 02111-1307 USA
 */
 
-class PAGET_StoreDescribeGenerator {
+class PAGET_FileGenerator {
   var $_config = array();
-  var $_storename;
+  var $_filename;
   
   function __construct(&$config, &$params) {
     $this->_config = $config;  
-    $this->_storename = $params['store'];
+    $this->_filename = $params['file'];
   }
   
   function process(&$desc, $request) {
-
-    $store = new Store($this->_storename);
-    $mb = $store->get_metabox();
-    $response = $mb->describe($desc->uri);
-    if ($response->is_success()) {
-      $desc->add_rdfxml($response->body);
-    }
+    $data = file_get_contents($this->_filename);
+    $desc->add_rdfxml($data);
   }
 
 }

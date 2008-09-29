@@ -310,6 +310,7 @@ xml version="1.0" encoding="utf-8"?>
 </div>
 <div id="footer">
     <!-- Page template based on Ultimate 'Right Menu' 2 column Liquid Layout by Matthew James Taylor See http://matthewjamestaylor.com/blog/ultimate-2-column-right-menu-ems.htm -->
+  <?php echo($this->_config['credits_html']); echo($this->_config['rights_text']); ?>
 
 </div>
 

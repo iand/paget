@@ -313,7 +313,20 @@ xml version="1.0" encoding="utf-8"?>
   <?php echo($this->_config['credits_html']); ?>
 
 </div>
-
+<?php
+  if (isset($this->_config['google_analytics_code'])) {
+?>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("<?php e($this->_config['google_analytics_code']); ?>");
+pageTracker._trackPageview();
+</script>
+<?php   
+  }
+?>
 </body>
 </html>
 <?php

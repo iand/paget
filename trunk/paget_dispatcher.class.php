@@ -17,6 +17,7 @@ class PAGET_Dispatcher {
     $this->set_default_option('page_title_suffix', ''); // the suffix appended to each page's title
     $this->set_default_option('format_delimiter', '.'); // the character used to delimit the format name from the resource uri
     $this->set_default_option('default_html_template', 'PAGET_SimpleHtmlRepresentation'); 
+//    $this->set_default_option('google_analytics_code', ''); // if set the HTML view will include google analytics code
   }
 
   function set_default_option($name, $value) {

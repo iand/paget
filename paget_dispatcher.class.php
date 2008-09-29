@@ -12,6 +12,8 @@ class PAGET_Dispatcher {
 
   function __construct(&$config) {
     $this->_config = $config;
+    $this->set_default_option('rights_text', ''); // a rights statement in plain text
+    $this->set_default_option('credits_html', ''); // a credits statement in html
     $this->set_default_option('page_title_suffix', ''); // the suffix appended to each page's title
     $this->set_default_option('format_delimiter', '.'); // the character used to delimit the format name from the resource uri
     $this->set_default_option('default_html_template', 'PAGET_SimpleHtmlRepresentation'); 

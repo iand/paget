@@ -67,7 +67,8 @@ class PAGET_Dispatcher {
 
     $desc = new PAGET_ResourceDescription($this->_config, $request->resource_uri);
     if ( isset($mapping['generators'])) {
-      foreach ( $mapping['generators'] as $generator_class) {
+      foreach ( $mapping['generators'] as $generator_info) {
+        $generator_class = $generator_info['class'];
         $generator = new $generator_class($this->_config);  
         $generator->process($desc, $request);
       }

@@ -19,14 +19,16 @@ Suite 330, Boston, MA 02111-1307 USA
 
 class PAGET_StoreDescribeGenerator {
   var $_config = array();
+  var $_store;
   
-  function __construct(&$config) {
+  function __construct(&$config, &$params) {
     $this->_config = $config;  
+    $this->_storename = $params['store'];
   }
   
   function process(&$desc, $request) {
 
-    $store = new Store($this->_config['store']);
+    $store = new Store($this->_store);
     $mb = $store->get_metabox();
     $response = $mb->describe($desc->uri);
     if ($response->is_success()) {

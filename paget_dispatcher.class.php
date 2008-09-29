@@ -107,6 +107,9 @@ class PAGET_Dispatcher {
     $desc->add_resource_triple( $request->resource_uri, RDFS_SEEALSO, $request->request_uri );
     $desc->add_resource_triple( $request->resource_uri, FOAF_ISPRIMARYTOPICOF, $request->request_uri );
 
+    if ( strlen($this->_config['rights_text']) > 0) {
+      $desc->add_literal_triple( $request->request_uri, 'http://purl.org/dc/elements/1.1/rights', $this->_config['rights_text'] );
+    }
 
     if ( $request->representation_type === 'html') {
       header("HTTP/1.1 200 OK");

@@ -6,6 +6,9 @@ class PAGET_SimpleHtmlRepresentation {
                       'http://www.w3.org/2000/01/rdf-schema#label' => array('singular' => 'label', 'plural' => 'labels', 'inverse' => 'is label of'),
                       'http://www.w3.org/2000/01/rdf-schema#comment' => array('singular' => 'comment', 'plural' => 'comments', 'inverse' => 'is comment of'),
                       'http://www.w3.org/2000/01/rdf-schema#seeAlso' => array('singular' => 'see also', 'plural' => 'see also', 'inverse' => 'is see also of'),
+                      'http://www.w3.org/2000/01/rdf-schema#isDefinedBy' => array('singular' => 'is defined by', 'plural' => 'is defined by', 'inverse' => 'defines'),
+                      'http://www.w3.org/2000/01/rdf-schema#range' => array('singular' => 'range', 'plural' => 'ranges', 'inverse' => 'is range of'),
+                      'http://www.w3.org/2000/01/rdf-schema#domain' => array('singular' => 'domain', 'plural' => 'domains', 'inverse' => 'is domain of'),
                       'http://xmlns.com/foaf/0.1/isPrimaryTopicOf' => array('singular' => 'is the primary topic of', 'plural' => 'is the primary topic of', 'inverse' => 'primary topic'),
                       'http://xmlns.com/foaf/0.1/primaryTopic' => array('singular' => 'primary topic', 'plural' => 'primary topics', 'inverse' => 'is the primary topic of'),
                       'http://xmlns.com/foaf/0.1/name' => array('singular' => 'name', 'plural' => 'names', 'inverse' => 'is name of'),
@@ -60,6 +63,11 @@ class PAGET_SimpleHtmlRepresentation {
   
   function __construct(&$config) {
     $this->_config = $config; 
+    if (isset($config['prefixes'])) {
+      foreach ($config['prefixes'] as $uri => $prefix) {
+        $this->prefixes[$uri] = $prefix;  
+      }
+    }
   }
   
   function emit($desc, $request) {
@@ -258,52 +266,65 @@ xml version="1.0" encoding="utf-8"?>
     <div class="colleft">
         <div class="col1wrap">
             <div class="col1">
-                <!-- Column 1 start -->
-  <h2>About <?php e($resource_uri);?></h2>
-  <table>
-  <?php
-    $primary_properties = array(RDFS_LABEL, RDFS_COMMENT, DC_TITLE, DC_DESCRIPTION, FOAF_NAME, 'http://purl.org/vocab/bio/0.1/olb', RDFS_SEEALSO, OWL_SAMEAS, 'http://xmlns.com/foaf/0.1/homepage', 'http://xmlns.com/foaf/0.1/weblog', 'http://xmlns.com/foaf/0.1/knows', RDF_TYPE);
-  
-    $index = $desc->get_index();
-    foreach ($primary_properties as $property) {
-      $this->echo_property_row($resource_uri, $property, $index);
-    }
-    
-    $remaining_properties = array_diff(array_keys($index[$resource_uri]), $primary_properties);
-    foreach ( $remaining_properties as $property) {
-      //if (array
-      $this->echo_property_row($resource_uri, $property, $index);
-    }
-  
-  ?>
-  </table>
-
-
+              <!-- Column 1 start -->
+                <h2>About <?php e($resource_uri);?></h2>
+                <table>
+                <?php
+                  $primary_properties = array(RDFS_LABEL, DC_TITLE, FOAF_NAME, RDFS_COMMENT, DC_DESCRIPTION, 'http://purl.org/vocab/bio/0.1/olb', RDFS_SEEALSO, OWL_SAMEAS, 'http://xmlns.com/foaf/0.1/homepage', 'http://xmlns.com/foaf/0.1/weblog', 'http://xmlns.com/foaf/0.1/knows', RDF_TYPE);
+                
+                  $index = $desc->get_index();
+                  foreach ($primary_properties as $property) {
+                    $this->echo_property_row($resource_uri, $property, $index);
+                  }
+                  
+                  $remaining_properties = array_diff(array_keys($index[$resource_uri]), $primary_properties);
+                  foreach ( $remaining_properties as $property) {
+                    $this->echo_property_row($resource_uri, $property, $index);
+                  }
+                  
+                  $inverse_property_index = array();
+                  foreach ($index as $s => $p_list) {
+                    foreach ($p_list as $p => $v_list) {
+                      foreach ($v_list as $v_info) {
+                        if ( $v_info['type'] == 'uri' ) {
+                          if ( $v_info['value'] === $resource_uri) {
+                            $inverse_property_index[$resource_uri][$p][] = array('type'=>'uri', 'value'=>$s);
+                          }
+                        } 
+                      }
+                    }
+                  }
+                
+                  $inverse_properties = array_keys($inverse_property_index[$resource_uri]);
+                  foreach ($inverse_properties as $property) {
+                    $this->echo_inverse_property_row($resource_uri, $property, $inverse_property_index);
+                  }
+                
+                ?>
+                </table>
                 <!-- Column 1 end -->
-
             </div>
         </div>
         <div class="col2">
             <!-- Column 2 start -->
-  <h2>About this document</h2>
-  <table>
-  <?php
-    $primary_properties = array(RDFS_LABEL, RDFS_COMMENT, DC_TITLE, DC_DESCRIPTION, FOAF_NAME, 'http://purl.org/vocab/bio/0.1/olb', RDFS_SEEALSO, OWL_SAMEAS, 'http://xmlns.com/foaf/0.1/homepage', 'http://xmlns.com/foaf/0.1/weblog', 'http://xmlns.com/foaf/0.1/knows', RDF_TYPE);
-  
-    $index = $desc->get_index();
-    foreach ($primary_properties as $property) {
-      $this->echo_property_row($request->request_uri, $property, $index);
-    }
-    
-    $remaining_properties = array_diff(array_keys($index[$request->request_uri]), $primary_properties);
-    foreach ( $remaining_properties as $property) {
-      //if (array
-      $this->echo_property_row($request->request_uri, $property, $index);
-    }
-  
-  ?>
-  </table>
-
+            <h2>About this document</h2>
+            <table>
+            <?php
+              $primary_properties = array(RDFS_LABEL, DC_TITLE, FOAF_NAME, RDFS_COMMENT, DC_DESCRIPTION, 'http://purl.org/vocab/bio/0.1/olb', RDFS_SEEALSO, OWL_SAMEAS, 'http://xmlns.com/foaf/0.1/homepage', 'http://xmlns.com/foaf/0.1/weblog', 'http://xmlns.com/foaf/0.1/knows', RDF_TYPE);
+            
+              $index = $desc->get_index();
+              foreach ($primary_properties as $property) {
+                $this->echo_property_row($request->request_uri, $property, $index);
+              }
+              
+              $remaining_properties = array_diff(array_keys($index[$request->request_uri]), $primary_properties);
+              foreach ( $remaining_properties as $property) {
+                //if (array
+                $this->echo_property_row($request->request_uri, $property, $index);
+              }
+            
+            ?>
+            </table>
             <!-- Column 2 end -->
         </div>
     </div>
@@ -355,26 +376,45 @@ pageTracker._trackPageview();
         $label = '';  
       }
       
-      echo '<tr><th valign="top"><span title="' .htmlspecialchars($property) . '">' . $this->link_uri($property, $label) . '</span></th>';
-      echo '<td valign="top">';
-      for ($i = 0; $i < count($property_values); $i++) {
-        if ($i > 0) {
-          if ($i < count($property_values) - 1) {
-            echo ', ';
-          }
-          else {
-            echo ' and ';
-          }
+      $this->echo_labelled_row($label, $property, $property_values);
+    }
+  }
+
+  function echo_inverse_property_row($resource_uri, $property, &$inverse_index) {
+
+
+    if (array_key_exists($property, $inverse_index[$resource_uri])) {
+      $property_values = $inverse_index[$resource_uri][$property];
+      
+      if ( array_key_exists($property, $this->labels) ) {
+        $label = ucfirst($this->labels[$property]['inverse']);
+        $this->echo_labelled_row($label, $property, $property_values);
+      }
+    }
+  }
+  
+  function echo_labelled_row($label, $property, &$property_values) {
+      
+    echo '<tr><th valign="top"><span title="' .htmlspecialchars($property) . '">' . $this->link_uri($property, $label) . '</span></th>';
+    echo '<td valign="top">';
+    for ($i = 0; $i < count($property_values); $i++) {
+      if ($i > 0) {
+        if ($i < count($property_values) - 1) {
+          echo ', ';
         }
-        if ($property_values[$i]['type'] == 'uri') {
-          echo $this->link_uri($property_values[$i]['value']);
-          }
         else {
-          $this->e($property_values[$i]['value']); 
+          echo ' and ';
         }
       }
-      echo '</td></tr>' . "\n";
+      if ($property_values[$i]['type'] == 'uri') {
+        echo $this->link_uri($property_values[$i]['value']);
+        }
+      else {
+        $this->e($property_values[$i]['value']); 
+      }
     }
+    echo '</td></tr>' . "\n";
+  
   }
 
   function link_uri($uri, $label = '') {

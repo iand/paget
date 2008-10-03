@@ -24,21 +24,6 @@ class PAGET_Dispatcher {
     if ( !isset($this->_config[$name]) )  $this->_config[$name] = $value;
   }
 
-/*
- * sources - a list of sources to query for rdf about the requested resource - may be empty
- * decorators - a sequence of decorators that add data to a simple graph
- * templates - 
- * /
-
-
-
-
-/*
- * $resource_map is an array of mappings
- * each mapping has the following keys:
- * path (required) - a regex to match the path of the resource
- * template (required) - the name of the template to use
-*/
   function dispatch() {
     $request = new PAGET_Request($this->_config, $_SERVER["SERVER_NAME"], $_SERVER["REQUEST_URI"]);
 

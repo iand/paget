@@ -68,6 +68,21 @@ class PAGET_SimpleHtmlRepresentation {
         $this->prefixes[$uri] = $prefix;  
       }
     }
+
+    $this->_config['groups']['labelling'] = array( 'label' => 'Key Information',
+                                                   'properties' => array(RDFS_LABEL, DC_TITLE, FOAF_NAME, RDFS_COMMENT, DC_DESCRIPTION, 'http://purl.org/vocab/bio/0.1/olb', RDF_TYPE),
+                                                  );
+    $this->_config['groups']['links'] = array( 'label' => 'Links',
+                                                   'properties' => array( RDFS_SEEALSO, OWL_SAMEAS, 'http://xmlns.com/foaf/0.1/homepage', 'http://xmlns.com/foaf/0.1/weblog', ),
+                                                  );
+
+
+    $this->_config['groups']['naming'] = array( 'label' => 'Full Name',
+                                                'properties' => array('http://xmlns.com/foaf/0.1/title', 'http://xmlns.com/foaf/0.1/firstName', 'http://xmlns.com/foaf/0.1/surname'),
+                                                  );
+                                                  
+    $this->_config['view']['http://xmlns.com/foaf/0.1/depiction'] = array ('appearance' => 'image' );                                                  
+
   }
   
   function emit($desc, $request) {
@@ -268,63 +283,30 @@ xml version="1.0" encoding="utf-8"?>
             <div class="col1">
               <!-- Column 1 start -->
                 <h2>About <?php e($resource_uri);?></h2>
-                <table>
                 <?php
-                  $primary_properties = array(RDFS_LABEL, DC_TITLE, FOAF_NAME, RDFS_COMMENT, DC_DESCRIPTION, 'http://purl.org/vocab/bio/0.1/olb', RDFS_SEEALSO, OWL_SAMEAS, 'http://xmlns.com/foaf/0.1/homepage', 'http://xmlns.com/foaf/0.1/weblog', 'http://xmlns.com/foaf/0.1/knows', RDF_TYPE);
                 
-                  $index = $desc->get_index();
-                  foreach ($primary_properties as $property) {
-                    $this->echo_property_row($resource_uri, $property, $index);
-                  }
-                  
-                  $remaining_properties = array_diff(array_keys($index[$resource_uri]), $primary_properties);
-                  foreach ( $remaining_properties as $property) {
-                    $this->echo_property_row($resource_uri, $property, $index);
-                  }
-                  
-                  $inverse_property_index = array();
-                  foreach ($index as $s => $p_list) {
-                    foreach ($p_list as $p => $v_list) {
-                      foreach ($v_list as $v_info) {
-                        if ( $v_info['type'] == 'uri' ) {
-                          if ( $v_info['value'] === $resource_uri) {
-                            $inverse_property_index[$resource_uri][$p][] = array('type'=>'uri', 'value'=>$s);
-                          }
-                        } 
-                      }
-                    }
-                  }
+                  $this->emit_group('labelling', $resource_uri, $desc);
+                  $this->emit_group('links', $resource_uri, $desc);
+                  $this->emit_group('naming', $resource_uri, $desc);
                 
-                  $inverse_properties = array_keys($inverse_property_index[$resource_uri]);
-                  foreach ($inverse_properties as $property) {
-                    $this->echo_inverse_property_row($resource_uri, $property, $inverse_property_index);
-                  }
+                  $this->emit_ungrouped_properties($resource_uri, $desc);
+                  $this->emit_inverse_properties($resource_uri, $desc);
                 
                 ?>
-                </table>
+                
                 <!-- Column 1 end -->
             </div>
         </div>
         <div class="col2">
             <!-- Column 2 start -->
-            <h2>About this document</h2>
-            <table>
-            <?php
-              $primary_properties = array(RDFS_LABEL, DC_TITLE, FOAF_NAME, RDFS_COMMENT, DC_DESCRIPTION, 'http://purl.org/vocab/bio/0.1/olb', RDFS_SEEALSO, OWL_SAMEAS, 'http://xmlns.com/foaf/0.1/homepage', 'http://xmlns.com/foaf/0.1/weblog', 'http://xmlns.com/foaf/0.1/knows', RDF_TYPE);
+            <h2>About this page</h2>
+            <?php 
+              $this->emit_group('labelling', $request->request_uri, $desc);
+              $this->emit_group('links', $request->request_uri, $desc);
+              $this->emit_group('naming', $request->request_uri, $desc);
             
-              $index = $desc->get_index();
-              foreach ($primary_properties as $property) {
-                $this->echo_property_row($request->request_uri, $property, $index);
-              }
-              
-              $remaining_properties = array_diff(array_keys($index[$request->request_uri]), $primary_properties);
-              foreach ( $remaining_properties as $property) {
-                //if (array
-                $this->echo_property_row($request->request_uri, $property, $index);
-              }
-            
+              $this->emit_ungrouped_properties($request->request_uri, $desc); 
             ?>
-            </table>
             <!-- Column 2 end -->
         </div>
     </div>
@@ -357,66 +339,6 @@ pageTracker._trackPageview();
     echo(htmlspecialchars($text));  
   } 
   
-
-  function echo_property_row($resource_uri, $property, &$index) {
-
-
-    if (array_key_exists($property, $index[$resource_uri])) {
-      $property_values = $index[$resource_uri][$property];
-      
-      if ( array_key_exists($property, $this->labels) ) {
-        if ( count($property_values) == 1) {
-          $label = ucfirst($this->labels[$property]['singular']);
-        }
-        else {
-          $label = ucfirst($this->labels[$property]['plural']);
-        }
-      }
-      else {
-        $label = '';  
-      }
-      
-      $this->echo_labelled_row($label, $property, $property_values);
-    }
-  }
-
-  function echo_inverse_property_row($resource_uri, $property, &$inverse_index) {
-
-
-    if (array_key_exists($property, $inverse_index[$resource_uri])) {
-      $property_values = $inverse_index[$resource_uri][$property];
-      
-      if ( array_key_exists($property, $this->labels) ) {
-        $label = ucfirst($this->labels[$property]['inverse']);
-        $this->echo_labelled_row($label, $property, $property_values);
-      }
-    }
-  }
-  
-  function echo_labelled_row($label, $property, &$property_values) {
-      
-    echo '<tr><th valign="top"><span title="' .htmlspecialchars($property) . '">' . $this->link_uri($property, $label) . '</span></th>';
-    echo '<td valign="top">';
-    for ($i = 0; $i < count($property_values); $i++) {
-      if ($i > 0) {
-        if ($i < count($property_values) - 1) {
-          echo ', ';
-        }
-        else {
-          echo ' and ';
-        }
-      }
-      if ($property_values[$i]['type'] == 'uri') {
-        echo $this->link_uri($property_values[$i]['value']);
-        }
-      else {
-        $this->e($property_values[$i]['value']); 
-      }
-    }
-    echo '</td></tr>' . "\n";
-  
-  }
-
   function link_uri($uri, $label = '') {
     if (preg_match('/^https?:\/\//', $uri) ) {
       $ret = '<a href="' . htmlspecialchars($this->remote_to_local($uri)) . '" class="uri">';
@@ -454,5 +376,142 @@ pageTracker._trackPageview();
       }
     }
   }
+
+  function emit_group($groupname, $resource_uri, &$desc) {
+    if ( isset($this->_config['groups'][$groupname]) && isset($this->_config['groups'][$groupname]['properties']) && is_array($this->_config['groups'][$groupname]['properties']) ) {
+      $data = $this->prepare_data($this->_config['groups'][$groupname]['properties'], $desc, $resource_uri);
+      $this->emit_table($data);
+    }
+  }
+
+  function emit_ungrouped_properties($resource_uri, &$desc) {
+    $index = $desc->get_index();
+    $remaining_properties = array_keys($index[$resource_uri]);
+    foreach( $this->_config['groups'] as $group ) {
+      $remaining_properties = array_diff($remaining_properties, $group['properties']);
+    }
+    $data = $this->prepare_data($remaining_properties, $desc, $resource_uri);
+    $this->emit_table($data);
+  }  
   
+  
+  function emit_inverse_properties($resource_uri, &$desc) {
+                    
+    $index = $desc->get_index();
+    $inverse_property_index = array();
+    foreach ($index as $s => $p_list) {
+      foreach ($p_list as $p => $v_list) {
+        foreach ($v_list as $v_info) {
+          if ( $v_info['type'] == 'uri' ) {
+            if ( $v_info['value'] === $resource_uri) {
+              $inverse_property_index[$resource_uri][$p][] = array('type'=>'uri', 'value'=>$s);
+            }
+          } 
+        }
+      }
+    }
+
+    $data = array();
+    
+    $inverse_properties = array_keys($inverse_property_index[$resource_uri]);
+    foreach ($inverse_properties as $property) {
+      $label = ucfirst($desc->get_first_literal($property, 'http://purl.org/net/vocab/2004/03/label#inverseSingular'));
+      if (strlen($label) > 0) {
+        $formatted_label = $this->format_property_label($property, $label);
+        $formatted_value = $this->format_property_values($property, $inverse_property_index[$resource_uri][$property]);
+        $data[] = array('label' => $formatted_label, 'value' => $formatted_value );
+      }
+    }
+    $this->emit_table($data);
+  }                
+  
+  
+  function prepare_data(&$properties, $desc, $resource_uri = null) {
+    $data = array();
+    if ($resource_uri == null ) {
+      $resource_uri = $desc->uri; 
+    }
+    
+    foreach ( $properties as $property) {
+      $property_values = $desc->get_subject_property_values($resource_uri, $property);
+      if ( count($property_values) > 0) {
+    
+        if ( count($property_values) == 1) {
+          $label = ucfirst($desc->get_first_literal($property, RDFS_LABEL));
+        }
+        else {
+          $label = ucfirst($desc->get_first_literal($property, 'http://purl.org/net/vocab/2004/03/label#plural'));
+        }         
+        
+        
+        $formatted_label = $this->format_property_label($property, $label);
+        $formatted_value = $this->format_property_values($property, $property_values);
+
+        $data[] = array('label' => $formatted_label, 'value' => $formatted_value );
+      }
+    }
+   
+    return $data; 
+  }
+  
+  function format_property_label($property, $label) {
+    return '<span title="' .htmlspecialchars($property) . '">' . $this->link_uri($property, $label) . '</span>';
+  }
+  function format_property_values($property, &$property_values) {
+    $formatted_value = '';
+    $appearance = 'text';
+    
+    if ( array_key_exists( $property, $this->_config['view'] ) && isset($this->_config['view'][$property]['appearance']) ) {
+      $appearance = $this->_config['view'][$property]['appearance'];
+    }
+    if ( $appearance == 'image' ) {
+      for ($i = 0; $i < count($property_values); $i++) {
+        if ($property_values[$i]['type'] == 'uri') {
+          $formatted_value .= '<img src="' . htmlspecialchars($property_values[$i]['value']). '" />';
+        }
+        else {
+          $formatted_value .= htmlspecialchars($property_values[$i]['value']); 
+        }
+      }
+    }
+    else {
+      for ($i = 0; $i < count($property_values); $i++) {
+        if ($i > 0) {
+          if ($i < count($property_values) - 1) {
+            $formatted_value .= ', ';
+          }
+          else {
+            $formatted_value .= ' and ';
+          }
+        }
+        if ($property_values[$i]['type'] == 'uri') {
+          
+          $formatted_value .= $this->link_uri($property_values[$i]['value']);
+          }
+        else {
+          $formatted_value .= htmlspecialchars($property_values[$i]['value']); 
+        }
+      }   
+    }
+    return $formatted_value;
+  }
+  
+  function emit_table(&$data) {
+    return $this->emit_key_value($data);
+    if ( count($data) > 0 ) {
+      echo '<table width="100%">';
+      foreach ($data as $item) {
+        echo '<tr><th valign="top" width="18%">' . $item['label'] . '</th><td valign="top">' . $item['value'] . '</td></tr>' . "\n";
+      }   
+      echo '</table>';
+    }
+  }
+
+  function emit_key_value(&$data) {
+    if ( count($data) > 0 ) {
+      foreach ($data as $item) {
+        echo '<p><strong>' . $item['label'] . '</strong>: ' . $item['value'] . '</p>' . "\n";
+      }   
+    }
+  }
 }

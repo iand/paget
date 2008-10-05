@@ -1,10 +1,10 @@
 <?php
 // This class is the main dispatcher for Paget
 require_once MORIARTY_DIR . 'moriarty.inc.php';
-require_once MORIARTY_DIR . 'store.class.php';
 require_once MORIARTY_DIR . 'simplegraph.class.php';
 require_once dirname(__FILE__) . '/paget_resourcedescription.class.php';
 require_once dirname(__FILE__) . '/paget_simplehtmlrepresentation.class.php';
+require_once dirname(__FILE__) . '/paget_request.class.php';
 require_once dirname(__FILE__) . '/functions.inc.php';
 
 class PAGET_Dispatcher {
@@ -54,16 +54,29 @@ class PAGET_Dispatcher {
     if ( isset($mapping['generators'])) {
       foreach ( $mapping['generators'] as $generator_info) {
         $generator_class = $generator_info['class'];
+        if ( ! class_exists($generator_class) && preg_match('~^PAGET_~', $generator_class) ) {
+          require_once dirname(__FILE__) . '/' . strtolower($generator_class) . '.class.php';
+        }
+
         $generator = new $generator_class($this->_config, $generator_info);  
         $generator->process($desc, $request);
       }
     }   
-           
+          
     if (!$desc->is_valid()) {
       $this->send_not_found($request);
     }
 
-
+    if ( isset($mapping['augmentors'])) {
+      foreach ( $mapping['augmentors'] as $augmentor_info) {
+        $augmentor_class = $augmentor_info['class'];
+        if ( ! class_exists($augmentor_class) && preg_match('~^PAGET_~', $augmentor_class) ) {
+          require_once dirname(__FILE__) . '/' . strtolower($augmentor_class) . '.class.php';
+        }
+        $augmentor = new $augmentor_class($this->_config, $augmentor_info);  
+        $augmentor->process($desc, $request);
+      }
+    }  
 
 
     if ( !$request->representation_type) {
@@ -172,39 +185,3 @@ class PAGET_Dispatcher {
 }
 
 
-class PAGET_Request {
-  var $_config;
-  var $resource_uri;
-  var $resource_path;
-  var $request_uri;
-  var $representation_type;
-  
-  function __construct(&$config, $hostname, $path) {
-    $this->_config = $config;
-    $this->request_uri = 'http://' . $hostname . $path;
-
-    $this->resource_path = $path;
-    $this->representation_type = '';
-    
-    if ( preg_match('~^(.+)' . preg_quote ($this->_config['format_delimiter'])  . '(html|rdf|xml|turtle|json)$~', $this->resource_path, $m) ) {
-      $this->resource_path = $m[1];
-      $this->representation_type = $m[2];
-    }
-
-    $hostname = preg_replace('~\.local$~', '', $hostname);
-    
-    $this->resource_uri = 'http://' . $hostname . $this->resource_path;
-  } 
-
-  function select_mapping(&$resource_map) {
-    foreach ( $resource_map as $mapping ) {
-      if ( isset($mapping['path'])) {
-        if (preg_match( '"' . $mapping['path'] . '"', $this->resource_path, $m)) {
-          return $mapping;    
-        }
-      }
-    }
-    return NULL;
-  }
-
-}

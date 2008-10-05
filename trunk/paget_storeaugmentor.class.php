@@ -1,7 +1,8 @@
 <?php
+// An augmentor that uses a store's augment service to derive more information about a resource
 require_once MORIARTY_DIR . 'store.class.php';
 
-class PAGET_StoreDescribeGenerator {
+class PAGET_StoreAugmentor {
   var $_config = array();
   var $_storename;
   

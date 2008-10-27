@@ -1,21 +1,14 @@
 <?php
 class PAGET_FileGenerator {
-  var $_config = array();
   var $_filename;
   var $_type;
   
-  function __construct(&$config, &$params) {
-    $this->_config = $config;  
-    $this->_filename = $params['file'];
-    if (isset($params['type'])) {
-      $this->_type = $params['type'];
-    }
-    else {
-      $this->_type = 'rdfxml';
-    }
+  function __construct($filename, $type) {
+    $this->_filename = $filename;
+    $this->_type = $type;
   }
   
-  function process(&$desc, $request) {
+  function add_triples($resource_uri, &$desc) {
     $data = file_get_contents($this->_filename);
     if ( $this->_type === 'rdfxml' ) {
       $desc->add_rdfxml($data);

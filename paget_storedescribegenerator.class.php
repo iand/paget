@@ -2,19 +2,16 @@
 require_once MORIARTY_DIR . 'store.class.php';
 
 class PAGET_StoreDescribeGenerator {
-  var $_config = array();
-  var $_storename;
+  var $_store_uri;
   
-  function __construct(&$config, &$params) {
-    $this->_config = $config;  
-    $this->_storename = $params['store'];
+  function __construct($store_uri) {
+    $this->_store_uri = $store_uri;
   }
   
-  function process(&$desc, $request) {
-
-    $store = new Store($this->_storename);
+  function add_triples($resource_uri, &$desc) {
+    $store = new Store($this->_store_uri);
     $mb = $store->get_metabox();
-    $response = $mb->describe($desc->uri);
+    $response = $mb->describe($resource_uri);
     if ($response->is_success()) {
       $desc->add_rdfxml($response->body);
     }

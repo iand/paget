@@ -9,7 +9,7 @@ class PAGET_SimplePropertyLabellerTest extends PHPUnit_Framework_TestCase {
     $labeller = new PAGET_SimplePropertyLabeller();
     $g = new SimpleGraph();
     $this->assertTrue( $g->is_empty() );
-    $labeller->process($g, NULL);
+    $labeller->process($g);
     $this->assertTrue( $g->is_empty() );
   }
 
@@ -17,7 +17,7 @@ class PAGET_SimplePropertyLabellerTest extends PHPUnit_Framework_TestCase {
     $labeller = new PAGET_SimplePropertyLabeller();
     $g = new SimpleGraph();
     $g->add_resource_triple('http://example.org/subj', RDF_TYPE, 'http://example.org/obj');
-    $labeller->process($g, NULL);
+    $labeller->process($g);
     $this->assertTrue( $g->has_literal_triple(RDF_TYPE, RDFS_LABEL, 'type') );
     $this->assertTrue( $g->has_literal_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#plural', 'types') );
     $this->assertTrue( $g->has_literal_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', 'is type of') );
@@ -28,7 +28,7 @@ class PAGET_SimplePropertyLabellerTest extends PHPUnit_Framework_TestCase {
     $g = new SimpleGraph();
     $g->add_resource_triple('http://example.org/subj', RDF_TYPE, 'http://example.org/obj');
     $g->add_resource_triple(RDF_TYPE, RDFS_LABEL, 'scooby');
-    $labeller->process($g, NULL);
+    $labeller->process($g);
     $this->assertFalse( $g->has_literal_triple(RDF_TYPE, RDFS_LABEL, 'type') );
   } 
 
@@ -37,7 +37,7 @@ class PAGET_SimplePropertyLabellerTest extends PHPUnit_Framework_TestCase {
     $g = new SimpleGraph();
     $g->add_resource_triple('http://example.org/subj', RDF_TYPE, 'http://example.org/obj');
     $g->add_resource_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#plural', 'scooby');
-    $labeller->process($g, NULL);
+    $labeller->process($g);
     $this->assertFalse( $g->has_literal_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#plural', 'types') );
   } 
 
@@ -46,7 +46,7 @@ class PAGET_SimplePropertyLabellerTest extends PHPUnit_Framework_TestCase {
     $g = new SimpleGraph();
     $g->add_resource_triple('http://example.org/subj', RDF_TYPE, 'http://example.org/obj');
     $g->add_resource_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', 'scooby');
-    $labeller->process($g, NULL);
+    $labeller->process($g);
     $this->assertFalse( $g->has_literal_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', 'is type of') );
   } 
   
@@ -55,7 +55,7 @@ class PAGET_SimplePropertyLabellerTest extends PHPUnit_Framework_TestCase {
     $g = new SimpleGraph();
     $g->add_resource_triple('http://example.org/subj', RDF_TYPE, 'http://example.org/obj');
     $g->add_resource_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#plural', 'scooby');
-    $labeller->process($g, NULL);
+    $labeller->process($g);
     $this->assertTrue( $g->has_literal_triple(RDF_TYPE, RDFS_LABEL, 'type') );
   }   
 
@@ -64,7 +64,7 @@ class PAGET_SimplePropertyLabellerTest extends PHPUnit_Framework_TestCase {
     $g = new SimpleGraph();
     $g->add_resource_triple('http://example.org/subj', RDF_TYPE, 'http://example.org/obj');
     $g->add_resource_triple(RDF_TYPE, RDFS_LABEL, 'scooby');
-    $labeller->process($g, NULL);
+    $labeller->process($g);
     $this->assertTrue( $g->has_literal_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#plural', 'types') );
   }   
 
@@ -73,7 +73,7 @@ class PAGET_SimplePropertyLabellerTest extends PHPUnit_Framework_TestCase {
     $g = new SimpleGraph();
     $g->add_resource_triple('http://example.org/subj', RDF_TYPE, 'http://example.org/obj');
     $g->add_resource_triple(RDF_TYPE, RDFS_LABEL, 'scooby');
-    $labeller->process($g, NULL);
+    $labeller->process($g);
     $this->assertTrue( $g->has_literal_triple(RDF_TYPE, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', 'is type of') );
   }   
 }

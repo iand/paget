@@ -33,7 +33,6 @@ class PAGET_HistoryWidget {
     }
     
     if ( count($items) > 0 ) {
-      echo "<h2>History</h2>\n";
       echo "<ul>\n";
       foreach ($items as $item) {
         echo "<li>" . htmlspecialchars($item['date']) . ' - ' . htmlspecialchars($item['text']) . "</li>\n";

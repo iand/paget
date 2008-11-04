@@ -24,12 +24,12 @@ class PAGET_SimpleHtmlRepresentation {
       $widgets[] = new PAGET_TermWidget($desc);
       $widgets[] = new PAGET_HistoryWidget($desc);
     }
-
-    if ( $desc->has_resource_triple($resource_uri, RDF_TYPE, 'http://www.w3.org/2002/07/owl#Ontology')  ) {
+    else if ( $desc->has_resource_triple($resource_uri, RDF_TYPE, 'http://www.w3.org/2002/07/owl#Ontology')  ) {
       $widgets[] = new PAGET_OntologyWidget($desc);
     }
-    
-    $widgets[] = new PAGET_DataWidget($desc);
+    else {
+      $widgets[] = new PAGET_DataWidget($desc);
+    }    
 
     header('Content-type: text/html');
     echo "<?";

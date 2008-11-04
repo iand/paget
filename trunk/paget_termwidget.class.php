@@ -216,7 +216,7 @@ class PAGET_TermWidget extends PAGET_Widget {
 
   function emit_uri($uri, $use_definite_article = false) {
     $ret = '';
-    $label = $this->desc->get_first_literal($uri, RDFS_LABEL, $resource_uri);
+    $label = $this->desc->get_first_literal($uri, RDFS_LABEL, $uri);
     if ( $use_definite_article ) {
       $ret .= 'a';        
       if ( preg_match('/^[aeiou]/', $label) ) {

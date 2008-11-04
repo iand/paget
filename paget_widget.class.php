@@ -64,16 +64,23 @@ class PAGET_Widget {
     echo(htmlspecialchars($text));  
   } 
 
-  function link_uri($uri, $label = '') {
+  function link_uri($uri, $label = '', $use_definite_article = false) {
     if (preg_match('/^https?:\/\//', $uri) ) {
-      $ret = '<a href="' . htmlspecialchars($this->remote_to_local($uri)) . '" class="uri">';
-      if ($label !== '') {
-        $ret .= $label;
+      $ret = '';
+      if ($label == '') {
+        $label = $this->make_labelled_uri($uri);
       }
-      else {
-        $ret .= $this->make_labelled_uri($uri);
-      }
-      $ret .= '</a>';
+      
+      if ( $use_definite_article ) {
+        $ret .= 'a';        
+        if ( preg_match('/^[aeiou]/', $label) ) {
+          $ret .= 'n';        
+        }
+        $ret .= ' ';
+      }   
+
+      $ret .= '<a href="' . htmlspecialchars($this->remote_to_local($uri)) . '" class="uri">';
+      $ret .= $label . '</a>';
       return $ret;
     }
     else {

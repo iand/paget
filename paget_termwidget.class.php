@@ -8,10 +8,6 @@ class PAGET_TermWidget extends PAGET_Widget {
     $this->desc = $desc;  
   }
 
-  function get_title($resource_uri) {
-    return $this->desc->get_first_literal($resource_uri, RDFS_LABEL, '[unlabelled term]');  
-  }
-
   function render($resource_uri) {
     $index = $this->desc->get_index();
     $inverse_index = $this->desc->get_inverse_index();
@@ -180,7 +176,7 @@ class PAGET_TermWidget extends PAGET_Widget {
 
 
           
-          echo $this->emit_uri($text, $use_definite_article);
+          echo $this->link_uri($text, '', $use_definite_article);
         }
         echo ' ' . htmlspecialchars($suffix);
         echo '</p>' . "\n"; 
@@ -195,7 +191,7 @@ class PAGET_TermWidget extends PAGET_Widget {
         echo '<p>' . htmlspecialchars($label) . ': ';
         for ($i = 0 ; $i < count($index[$uri][$property]); $i++) {
           if ($i > 0) { echo ', '; }      
-          echo $this->emit_uri($index[$uri][$property][$i]['value']);
+          echo $this->link_uri($index[$uri][$property][$i]['value']);
         }
         echo '</p>' . "\n"; 
       }
@@ -213,26 +209,6 @@ class PAGET_TermWidget extends PAGET_Widget {
     }
   }  
   
-
-  function emit_uri($uri, $use_definite_article = false) {
-    $ret = '';
-    $label = $this->desc->get_first_literal($uri, RDFS_LABEL, $uri);
-    if ( $use_definite_article ) {
-      $ret .= 'a';        
-      if ( preg_match('/^[aeiou]/', $label) ) {
-        $ret .= 'n';        
-      }
-      $ret .= ' ';
-    }    
-    if (preg_match('/^https?:\/\//', $uri) ) {
-      $ret .= '<a href="' . htmlspecialchars($this->remote_to_local($uri)) . '" class="uri">' . htmlspecialchars($label) . '</a>';
-    }
-    else {
-      $ret .= htmlspecialchars($uri);
-    }
-    
-    return $ret;
-  }
 
 
 

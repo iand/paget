@@ -17,7 +17,7 @@ class PAGET_TermWidget extends PAGET_Widget {
     $inverse_index = $this->desc->get_inverse_index();
     $is_property = $this->desc->has_resource_triple( $resource_uri, RDF_TYPE, RDF_PROPERTY );
 
-    echo '<div class="terminfo">' . htmlspecialchars($this->get_description()) . '</div>';
+    echo '<div class="terminfo">' . htmlspecialchars($this->get_description($resource_uri)) . '</div>';
     
     $data = array();
     $data[] = array('label' => 'Full URI', 'value' => '<a href="' . htmlspecialchars($this->remote_to_local($resource_uri)) . '" class="uri">' . htmlspecialchars($this->remote_to_local($resource_uri)) . '</a>');

@@ -70,24 +70,19 @@ class PAGET_OntologyWidget extends PAGET_Widget {
 
   
         
-    foreach ($index[$resource_uri] as $p => $v_list) {
-      foreach ($v_list as $v_info) {
-        if ( $p == 'http://purl.org/vocab/vann/example' && $v_info['type'] == 'uri') {
-          $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example');
-          
-          $req = new HttpRequest('GET', $v_info['value']);
-          $response = $req->execute();
-          if ($response->is_success()) {
-            echo '<h3>' . htmlspecialchars($title) . '</h3>';  
-            echo $response->body;
+    if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/example')) {
+      echo '<h2>Examples</h2>';
+      echo '<ul>';
+      foreach ($index[$resource_uri] as $p => $v_list) {
+        foreach ($v_list as $v_info) {
+          if ( $p == 'http://purl.org/vocab/vann/example' && $v_info['type'] == 'uri') {
+            $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example');
+            echo '<li><a href="' . htmlspecialchars($v_info['value']) . '">' . htmlspecialchars($title) . '</a></li>';
           }
-          else {
-            echo '<h3><a href="' . htmlspecialchars($v_info['value']) . '">' . htmlspecialchars($title) . '</a></h3>';
-          }
-        }
-      }     
+        }     
+      }
+      echo '</ul>';
     }
-
 
     if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
       echo '<h2>History</h2>';

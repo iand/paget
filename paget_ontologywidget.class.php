@@ -89,10 +89,12 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     }
 
 
-    echo '<h2>History</h2>';
-    $history_widget = new PAGET_HistoryWidget($this->desc);
-    $history_widget->render($resource_uri);
-    
+    if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
+      echo '<h2>History</h2>';
+      $history_widget = new PAGET_HistoryWidget($this->desc);
+      $history_widget->render($resource_uri);
+    }    
+
     
     echo '<h2>Other Information</h2>';
     $data_widget = new PAGET_DataWidget($this->desc);

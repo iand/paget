@@ -37,6 +37,7 @@ class PAGET_UriSpace {
     
     if (preg_match('~^(.+)\.(html|rdf|xml|turtle|json)$~', $uri)) {
       $desc = $this->get_description($uri);
+      if ($desc == null ) return null;
       if ($desc->is_valid()) return $desc;
     }
     else {

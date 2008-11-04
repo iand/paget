@@ -19,7 +19,7 @@ class PAGET_SimpleHtmlRepresentation {
     
     $title = $desc->get_label();
 
-    $widgets = array();
+    $widgets= array();
     if ( $desc->has_resource_triple($resource_uri, RDF_TYPE, RDF_PROPERTY) || $desc->has_resource_triple($resource_uri, RDF_TYPE, RDFS_CLASS) ) {
       $widgets[] = new PAGET_TermWidget($desc);
     }
@@ -28,8 +28,8 @@ class PAGET_SimpleHtmlRepresentation {
     }
     else {
       $widgets[] = new PAGET_DataWidget($desc);
-    }    
-
+    }  
+    
     header('Content-type: text/html');
     echo "<?";
 
@@ -68,7 +68,7 @@ xml version="1.0" encoding="utf-8"?>
       #layoutdims { clear:both; background:#eee; border-top:4px solid #000; margin:0; padding:6px 15px !important; text-align:right;}
       .colmask { position:relative; clear:both; float:left; width:100%; overflow:hidden;}
       .fullpage {background:#fff;}
-      .fullpage .col1 {margin:0 0.5em; padding: 0.5em;}
+      .fullpage .col1 {margin:0 0.5 em; padding: 0.5em;}
       #footer {clear:both;float:left; width:100%; border-top:1px solid #000;}
       #footer p { padding:10px; margin:0;}
       code.xml .text {color: #000000; background: transparent;}
@@ -107,9 +107,43 @@ xml version="1.0" encoding="utf-8"?>
     <div class="colmask fullpage">
       <div class="col1">
       <?php
+
+
         foreach ($widgets as $widget) {
           $widget->render($resource_uri);
         }  
+
+        $resources = array();
+        $index = $desc->get_index();
+        foreach ($index as $subject => $subject_data) {
+          if (strpos($subject, $resource_uri . '#') === 0) {
+            $resources[] = $subject;
+          }
+        }
+
+        foreach ($resources as $resource_uri_to_describe) {
+          $secondary_widgets = array();
+          if ( $desc->has_resource_triple($resource_uri_to_describe, RDF_TYPE, RDF_PROPERTY) || $desc->has_resource_triple($resource_uri_to_describe, RDF_TYPE, RDFS_CLASS) ) {
+            $secondary_widgets[] = new PAGET_TermWidget($desc);
+          }
+          else if ( $desc->has_resource_triple($resource_uri_to_describe, RDF_TYPE, 'http://www.w3.org/2002/07/owl#Ontology')  ) {
+            $secondary_widgets[] = new PAGET_OntologyWidget($desc);
+          }
+          else {
+            $secondary_widgets[] = new PAGET_DataWidget($desc);
+          }    
+
+        
+          echo '<h2>';
+          echo(htmlspecialchars($secondary_widgets[0]->get_title($resource_uri_to_describe)));
+          echo '</h2>';
+          foreach ($secondary_widgets as $widget) {
+            $widget->render($resource_uri_to_describe);
+          }  
+
+        }
+        
+
       ?>
       </div>
     </div>

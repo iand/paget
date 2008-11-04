@@ -22,12 +22,14 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       }
     }    
     
-    $this->emit_property_value_list($resource_uri, array('http://purl.org/vocab/vann/preferredNamespaceUri',
+    $key_properties = array('http://purl.org/vocab/vann/preferredNamespaceUri',
                                                           'http://purl.org/vocab/vann/preferredNamespacePrefix',
                                                           'http://purl.org/dc/elements/1.1/contributor',
-                                                        ));
+                                                          'http://purl.org/dc/elements/1.1/rights',
+                                                        );
+    
+    $this->emit_property_value_list($resource_uri,$key_properties);
 
-    echo '<h2>Defined Terms</h2>';
     $inverse_index = $this->desc->get_inverse_index();
     $def_uri = '';
     if (array_key_exists($resource_uri, $inverse_index) && array_key_exists(RDFS_ISDEFINEDBY, $inverse_index[$resource_uri])) {
@@ -38,11 +40,30 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     }
     
     if (strlen($def_uri) > 0) {
-      $tw = new PAGET_TermWidget($this->desc);
       
-      foreach ($inverse_index[$def_uri][RDFS_ISDEFINEDBY] as $v_info) {
-        echo '<h3>' . htmlspecialchars($tw->get_title($v_info['value'])) . '</h3>';
-        $tw->render_short($v_info['value']);
+      $terms = $inverse_index[$def_uri][RDFS_ISDEFINEDBY];
+      if  (count($terms) > 0) {
+        $tw = new PAGET_TermWidget($this->desc);
+        $rows = array();
+        foreach ($terms as $v_info) {
+          if ( $v_info['type'] == 'uri' ) {
+            $term_uri = $v_info['value'];
+            $title = $tw->get_title($term_uri);
+            $row = '<tr><td valign="top"><a href="' . htmlspecialchars($term_uri) . '">' . htmlspecialchars($title) . '</a></td>';
+            $row .= '<td valign="top">' . htmlspecialchars($tw->get_description($term_uri)) . '</td></tr>';
+    
+            $rows[$title] = $row;
+          }
+        }
+        if (count($rows)  > 0) { 
+          ksort( $rows );
+          echo '<h2>Properties and Classes</h2>';
+          echo '<table>';
+          foreach ($rows as $key => $row) {
+            echo $row . "\n";   
+          }
+          echo '</table>';
+        }
       }
     }
     
@@ -66,6 +87,19 @@ class PAGET_OntologyWidget extends PAGET_Widget {
         }
       }     
     }
+
+
+    echo '<h2>History</h2>';
+    $history_widget = new PAGET_HistoryWidget($this->desc);
+    $history_widget->render($resource_uri);
+    
+    
+    echo '<h2>Other Information</h2>';
+    $data_widget = new PAGET_DataWidget($this->desc);
+    $data_widget->ignore_properties(array(DC_TITLE, RDFS_LABEL, DC_DESCRIPTION, RDFS_COMMENT, 'http://purl.org/vocab/vann/example'));
+    $data_widget->ignore_properties($key_properties);
+    $data_widget->ignore_properties(array('http://www.w3.org/2004/02/skos/core#changeNote', 'http://www.w3.org/2004/02/skos/core#historyNote', 'http://purl.org/dc/terms/issued'));
+    $data_widget->render($resource_uri);
 
   }
 }

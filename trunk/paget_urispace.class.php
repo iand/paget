@@ -13,10 +13,6 @@ class PAGET_UriSpace {
   }
 
   function dispatch() {
-    // 1. Does the request URI identify a document in the filesystem? serve with 200
-    // 2. Does the request URI identify a description of some resource we know about? construct that document and serve with 200
-    // 3. Does the request URI identify something that we have some metadata about? 303 to a description of that resource
-    // 4. 404
     $request_uri = 'http://' . $_SERVER["SERVER_NAME"]. $_SERVER["REQUEST_URI"];
     $resource = $this->get_resource($request_uri);
     if ( $resource == null ) {
@@ -29,6 +25,7 @@ class PAGET_UriSpace {
 
   function get_resource($uri) {
     $path = parse_url($uri, PHP_URL_PATH);
+    
     if (array_key_exists($path, $this->_redirects)) {
       return new PAGET_PermanentRedirect('http://' . $_SERVER["HTTP_HOST"] . $this->_redirects[$path]);
     }

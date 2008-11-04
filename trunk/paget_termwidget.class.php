@@ -16,7 +16,13 @@ class PAGET_TermWidget extends PAGET_Widget {
     $index = $this->desc->get_index();
     $inverse_index = $this->desc->get_inverse_index();
     $is_property = $this->desc->has_resource_triple( $resource_uri, RDF_TYPE, RDF_PROPERTY );
-    $this->render_short($resource_uri);
+
+    echo '<div class="terminfo">' . htmlspecialchars($this->get_description()) . '</div>';
+    
+    $data = array();
+    $data[] = array('label' => 'Full URI', 'value' => '<a href="' . htmlspecialchars($this->remote_to_local($resource_uri)) . '" class="uri">' . htmlspecialchars($this->remote_to_local($resource_uri)) . '</a>');
+    $this->emit_key_value($data);  
+
 
 ?>
 <?php
@@ -95,10 +101,7 @@ class PAGET_TermWidget extends PAGET_Widget {
   
   
   
-  function render_short($resource_uri) {
-    $is_property = $this->desc->has_resource_triple( $resource_uri, RDF_TYPE, RDF_PROPERTY );
-  
-  
+  function get_description($resource_uri) {
     $definition = '';
     $status = '';
     
@@ -116,13 +119,7 @@ class PAGET_TermWidget extends PAGET_Widget {
     }
     
     if ($this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition')) {
-      if ($is_property) {
-        $info .= "[The values of this property are...] " ;
-      }
-      else {
-        $info .= "[The members of this class are...] " ;
-      }
-      $info .= lcfirst($this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition', ''));       
+      $info .= $this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition', '');       
     }
 
     $comments = $this->desc->get_literal_triple_values($resource_uri, RDFS_COMMENT);  
@@ -138,11 +135,8 @@ class PAGET_TermWidget extends PAGET_Widget {
         $info = 'This term ' . $status;
       }
     }    
-    echo '<div class="terminfo">' . htmlspecialchars($info) . '</div>';
     
-    $data = array();
-    $data[] = array('label' => 'Full URI', 'value' => '<a href="' . htmlspecialchars($this->remote_to_local($resource_uri)) . '" class="uri">' . htmlspecialchars($this->remote_to_local($resource_uri)) . '</a>');
-    $this->emit_key_value($data);  
+    return $info;
     
   }
 

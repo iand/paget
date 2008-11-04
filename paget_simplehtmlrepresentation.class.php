@@ -68,33 +68,15 @@ xml version="1.0" encoding="utf-8"?>
       #layoutdims { clear:both; background:#eee; border-top:4px solid #000; margin:0; padding:6px 15px !important; text-align:right;}
       .colmask { position:relative; clear:both; float:left; width:100%; overflow:hidden;}
       .fullpage {background:#fff;}
-      .fullpage .col1 {margin:0 1em;}
+      .fullpage .col1 {margin:0 0.5em; padding: 0.5em;}
       #footer {clear:both;float:left; width:100%; border-top:1px solid #000;}
       #footer p { padding:10px; margin:0;}
-          code.xml .text {
-      color: #000000;
-      background: transparent;
-    }
-    code.xml .elem {
-      color: #000080; 
-      background: transparent;
-    }
-    code.xml .attr {
-      color: #008080;
-      background: transparent;
-    }
-    code.xml .attrVal {
-      color: #666666;
-      background: transparent;
-    }
-    code.xml .highlight {
-      background: #ffff00;
-    }
-  pre {
-    border: 1px #999999 dotted;
-    background-color: #eeeeee;
-    color: #000000;
-  }
+      code.xml .text {color: #000000; background: transparent;}
+      code.xml .elem {color: #000080; background: transparent;}
+      code.xml .attr {color: #008080; background: transparent;}
+      code.xml .attrVal {color: #666666;background: transparent;}
+      code.xml .highlight {background: #ffff00;}
+      pre {border: 1px #999999 dotted;background-color: #eeeeee; color: #000000;}
   
 
       /* --> */

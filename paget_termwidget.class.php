@@ -115,6 +115,16 @@ class PAGET_TermWidget extends PAGET_Widget {
   function get_description($resource_uri) {
     $definition = '';
     $status = '';
+    $intro = '';
+    $info = '';
+    
+    if ($this->desc->has_resource_triple( $resource_uri, RDF_TYPE, RDF_PROPERTY )) {
+      $intro = 'A property representing ';
+    }
+    else if ($this->desc->has_resource_triple( $resource_uri, RDF_TYPE, RDFS_CLASS )) {
+      $intro = 'A class whose members are ';
+    }
+
     
     if ($this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status')) {
       $status_code = $this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status', '');
@@ -130,7 +140,12 @@ class PAGET_TermWidget extends PAGET_Widget {
     }
     
     if ($this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition')) {
-      $info .= $this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition', '');       
+      if (strlen($info) == 0 && strlen(intro) > 0) {
+        $info = $intro . lcfirst($this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition', ''));
+      }
+      else {
+        $info .= $this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition', '');       
+      }
     }
 
     $comments = $this->desc->get_literal_triple_values($resource_uri, RDFS_COMMENT);  

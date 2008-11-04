@@ -95,8 +95,19 @@ class PAGET_TermWidget extends PAGET_Widget {
       $this->list_relations($index, $resource_uri, OWL_EQUIVALENTCLASS, 'Equivalent to');
     }
   }
-
-  echo '</div>';    
+  
+    if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
+      echo '<h2>History</h2>';
+      $history_widget = new PAGET_HistoryWidget($this->desc);
+      $history_widget->render($resource_uri);
+    }    
+    
+    echo '<h2>Other Information</h2>';
+    $data_widget = new PAGET_DataWidget($this->desc);
+    $data_widget->ignore_properties(array(DC_TITLE, RDFS_LABEL, DC_DESCRIPTION, RDFS_COMMENT, 'http://purl.org/vocab/vann/example', 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status', 'http://www.w3.org/2004/02/skos/core#definition'));
+    $data_widget->ignore_properties(array(OWL_EQUIVALENTCLASS, RDFS_RANGE, RDFS_DOMAIN, OWL_DISJOINTWITH, RDFS_SUBCLASSOF, RDFS_SUBPROPERTYOF, OWL_EQUIVALENTPROPERTY, OWL_INVERSEOF, OWL_SYMMETRICPROPERTY, OWL_FUNCTIONALPROPERTY, OWL_INVERSEFUNCTIONALPROPERTY, OWL_TRANSITIVEPROPERTY ));
+    $data_widget->ignore_properties(array('http://www.w3.org/2004/02/skos/core#changeNote', 'http://www.w3.org/2004/02/skos/core#historyNote', 'http://purl.org/dc/terms/issued'));
+    $data_widget->render($resource_uri);    
   }  
   
   

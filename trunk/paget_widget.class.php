@@ -103,14 +103,7 @@ class PAGET_Widget {
   }
   
   function remote_to_local($uri) {
-    if (preg_match('~http://([^/]+)/~i', $uri, $m)) {
-      if ( $_SERVER["HTTP_HOST"] == $m[1] . '.local' ) {
-        return str_replace($m[1], $_SERVER["HTTP_HOST"], $uri);
-      }
-      else {
-        return $uri;
-      }
-    }
+    return $this->desc->map_uri($uri);
   }
     
   function emit_table(&$data) {
@@ -184,4 +177,32 @@ class PAGET_Widget {
     
     $this->emit_key_value($data);   
   }    
+
+
+  function emit_image_properties($resource_uri, $properties) {
+    $data = array();
+    foreach ($properties as $property) {
+      $property_values = $this->desc->get_subject_property_values($resource_uri, $property);
+      if ( count($property_values) > 0) {
+    
+        if ( count($property_values) == 1) {
+          $label = ucfirst($this->desc->get_first_literal($property, RDFS_LABEL));
+        }
+        else {
+          $label = ucfirst($this->desc->get_first_literal($property, 'http://purl.org/net/vocab/2004/03/label#plural'));
+        }         
+        
+        
+        $formatted_label = $this->format_property_label($property, $label);
+        
+        foreach ($property_values as $property_value) {
+          if ($property_value['type'] == 'uri') {
+            echo '<div style="float:right;"><a href="' . htmlspecialchars($property_value['value'] ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
+          }
+        }       
+      }
+    }
+    
+  }    
+
 }

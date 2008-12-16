@@ -36,7 +36,8 @@ class PAGET_Widget {
 
   
   function __construct(&$desc) {
-    $this->desc = $desc;  
+    $this->desc = $desc;
+    $this->prefixes = array_merge($this->prefixes, $desc->get_prefix_mappings());
   }
   
   function get_title($resource_uri) {

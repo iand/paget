@@ -27,6 +27,9 @@ class PAGET_ResourceDescription extends SimpleGraph {
     return $this->_media_type;  
   }
 
+  function get_prefix_mappings() {
+    return array_flip($this->_ns);  
+  }
 
   function is_valid() {
     return $this->_is_valid;
@@ -45,11 +48,11 @@ class PAGET_ResourceDescription extends SimpleGraph {
 
     foreach ($this->_media_types as $extension => $type_info) {
       if ( $type_info['type'] != $this->_media_type) {
-        $this->add_resource_triple( $this->_uri, 'http://purl.org/dc/terms/hasFormat', $this->_primary_resource . '.' . $extension );
-        $this->add_resource_triple( $this->_primary_resource . '.' . $extension, RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
-        $this->add_resource_triple( $this->_primary_resource . '.' . $extension, RDF_TYPE, FOAF_DOCUMENT );
-        $this->add_literal_triple( $this->_primary_resource . '.' . $extension , 'http://purl.org/dc/elements/1.1/format', $type_info['type'] );
-        $this->add_literal_triple( $this->_primary_resource . '.' . $extension , RDFS_LABEL, $type_info['label'] );
+        $this->add_resource_triple( $this->_uri, 'http://purl.org/dc/terms/hasFormat', $this->map_uri($this->_primary_resource) . '.' . $extension );
+        $this->add_resource_triple( $this->map_uri($this->_primary_resource) . '.' . $extension, RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
+        $this->add_resource_triple( $this->map_uri($this->_primary_resource) . '.' . $extension, RDF_TYPE, FOAF_DOCUMENT );
+        $this->add_literal_triple( $this->map_uri($this->_primary_resource) . '.' . $extension , 'http://purl.org/dc/elements/1.1/format', $type_info['type'] );
+        $this->add_literal_triple( $this->map_uri($this->_primary_resource) . '.' . $extension , RDFS_LABEL, $type_info['label'] );
       }
     }
     

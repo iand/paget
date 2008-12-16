@@ -168,4 +168,20 @@ class PAGET_ResourceDescription extends SimpleGraph {
     return $this->get_first_literal($s, $p, $def);
   }
   
+  
+  // This function maps a URI to a local equivalent
+  // Override this when you want the link in your HTML output to point to somewhere other than the URI itself, e.g. a proxy
+  // The default implementation rewrites URIs to the domain name suffixed with .local for assisting with testing
+  // For example http://example.com/foo might map to http://example.com.local/foo if the application is being accessed from example.com.local
+  function map_uri($uri) {
+    if (preg_match('~http://([^/]+)/~i', $uri, $m)) {
+      if ( $_SERVER["HTTP_HOST"] == $m[1] . '.local' ) {
+        return str_replace($m[1], $_SERVER["HTTP_HOST"], $uri);
+      }
+      else {
+        return $uri;
+      }
+    }
+  }
+
 }

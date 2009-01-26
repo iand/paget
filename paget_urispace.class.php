@@ -3,28 +3,39 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_abstractresource.c
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_simplehtmlrepresentation.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_resourcedescription.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_permanentredirect.class.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_request.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'functions.inc.php';
 
 class PAGET_UriSpace {
   var $_redirects = array();
   var $_files = array();
+  var $_forms = array();
   function __construct() {
 
   }
 
   function dispatch() {
-    $request_uri = 'http://' . $_SERVER["SERVER_NAME"]. $_SERVER["REQUEST_URI"];
-    $resource = $this->get_resource($request_uri);
+    $request = new PAGET_Request();
+    $resource = $this->get_resource($request);
     if ( $resource == null ) {
-      $this->send_client_error(404, 'Not Found', 'The requested resource ' . $request_uri . ' was not found on this server (empty description)');
+      $this->send_client_error(404, 'Not Found', 'The requested resource ' . $request->full_path . ' was not found on this server (empty description)');
     }
     
-    $resource->get();
+    if ( $this->_has_http_method($resource, $request->method) ) {
+      $response = $resource->{$request->method}($this, $request);
+      if ($response && method_exists($response, 'emit') ) {
+        $response->emit();  
+      }
+    }
+    else {
+      $this->send_client_error(405, 'Method not allowed');
+    }
   }
 
 
-  function get_resource($uri) {
-    $path = parse_url($uri, PHP_URL_PATH);
+  function get_resource($request) {
+    $path = $request->full_path;
+    $uri = $request->uri;
     
     if (array_key_exists($path, $this->_redirects)) {
       return new PAGET_PermanentRedirect('http://' . $_SERVER["HTTP_HOST"] . $this->_redirects[$path]);
@@ -33,6 +44,14 @@ class PAGET_UriSpace {
     if (array_key_exists($path, $this->_files) && file_exists($this->_files[$path]) ) {
       readfile($this->_files[$path]);
       exit; 
+    }
+
+    if (array_key_exists($path, $this->_forms) && array_key_exists('uri', $request->data)) {
+      $res = $this->get_abstract_resource($request->data['uri']);
+      $desc = $this->get_description($res->get_best_description_uri());
+      $form = $this->get_form($this->_forms[$path], $uri, $desc);
+      return $form;
+//      return new PAGET_PermanentRedirect('http://' . $_SERVER["HTTP_HOST"] . $this->_redirects[$path]);
     }
     
     if (preg_match('~^(.+)\.(html|rdf|xml|turtle|json)$~', $uri)) {
@@ -64,6 +83,10 @@ class PAGET_UriSpace {
   function get_abstract_resource($uri) {
     return new PAGET_AbstractResource($uri); 
   }
+  
+  function get_form($formname, $uri, &$desc) {
+    return new PAGET_Form($uri, $desc);
+  } 
 
   function send_ok($body, $content_type) {
     header("HTTP/1.1 200 OK");
@@ -103,6 +126,39 @@ class PAGET_UriSpace {
   function add_file($path, $filename) {
     $this->_files[$path] = $_SERVER['DOCUMENT_ROOT'] . $filename;     
   }  
+
+  function add_form($path, $formname) {
+    $this->_forms[$path] = $formname;     
+  }  
+  
+  function get_template(&$request) {
+    if (array_key_exists($request->full_path, $this->_forms)) {
+      return PAGET_DIR . 'templates' .  DIRECTORY_SEPARATOR . 'form.tmpl.html';
+    }
+    else {
+      return PAGET_DIR . 'templates' .  DIRECTORY_SEPARATOR . 'plain.tmpl.html';
+    }
+  }
+  
+  function get_setting($setting_name) {
+    return '';  
+  }
+  
+
+  /**
+   * Is the given method name a valid HTTP method and a method on the resource
+   * @param Resource resource
+   * @param str method
+   * @return bool
+   */
+  function _has_http_method(&$resource, $method)
+  {
+    if ($method == 'head' || $method == 'get' || $method == 'put' || $method == 'post' || $method == 'delete') {
+      return method_exists($resource, $method);
+    }
+    return FALSE;
+  }
+
 }
 
 

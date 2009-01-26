@@ -1,5 +1,5 @@
 <?php
-define('STORE_URI', 'http://api.talis.com/stores/iand');
+if (!defined('STORE_URI')) define('STORE_URI', 'http://api.talis.com/stores/iand');
 define('LIB_DIR', dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/lib/');
 define('PAGET_DIR', LIB_DIR . 'paget' . DIRECTORY_SEPARATOR);
 define('MORIARTY_DIR', LIB_DIR . 'moriarty' . DIRECTORY_SEPARATOR);

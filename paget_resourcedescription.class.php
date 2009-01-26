@@ -1,5 +1,6 @@
 <?php
 require_once MORIARTY_DIR . 'simplegraph.class.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_response.class.php';
 class PAGET_ResourceDescription extends SimpleGraph {   
   var $_uri;
   var $_primary_resource;
@@ -118,35 +119,47 @@ class PAGET_ResourceDescription extends SimpleGraph {
     return $label;
   }
   
-  function get() {
-    header("HTTP/1.1 200 OK");
-    header('Content-type: ' . $this->_media_type);
-    
-    if ($this->_media_type == 'application/rdf+xml') return $this->get_rdfxml();
-    if ($this->_media_type == 'application/xml') return $this->get_rdfxml();
-    if ($this->_media_type == 'application/json') return $this->get_json();
-    if ($this->_media_type == 'text/plain') return $this->get_turtle();
-    
-    if ($this->_media_type == 'text/html') return $this->get_html();
-    
-    return $this->get_rdfxml();
-  }
-  
-  function get_html() {
-    $repr = new PAGET_SimpleHtmlRepresentation();
-    $repr->emit($this);
+  function get(&$urispace,&$request) {
+
+    $response = new PAGET_Response(200);
+
+    switch ($this->_media_type) {
+      case 'application/xml':
+      case 'application/rdf+xml':
+        $response->set_body($this->to_rdfxml());
+        break;
+      case 'application/json':
+        $response->set_body($this->to_json());
+        break;
+      case 'text/plain':
+        $response->set_body($this->to_turtle());
+        break;
+      case 'text/html':
+        $response->set_body($this->get_html($urispace, $request));
+        break;
+      default:    
+         $response->set_body($this->to_rdfxml());
+    }    
+    $response->configure($this, $request);
+    return $response;
   }
 
-  function get_rdfxml() {
-    echo $this->to_rdfxml();
-  }
-  
-  function get_json() {
-    echo $this->to_json();
-  }
+  function get_html(&$urispace, &$request) {
+    $tmpl = $urispace->get_template($request);
+    if ( null == $tmpl ) {
+      $tmpl = PAGET_DIR . 'templates' .  DIRECTORY_SEPARATOR . 'plain.tmpl.html';
+    }
 
-  function get_turtle() {
-    echo $this->to_turtle();
+    ob_start();
+    try {
+      include($tmpl);
+      $buffer = ob_get_clean();
+      return $buffer;
+    } 
+    catch (Exception $ex) {
+      ob_end_clean();
+      throw $ex;
+    }
   }
 
 

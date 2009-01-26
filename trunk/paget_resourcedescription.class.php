@@ -19,6 +19,9 @@ class PAGET_ResourceDescription extends SimpleGraph {
     if ( preg_match('~\.(html|rdf|xml|turtle|json)$~', $this->_uri, $m) ) {
       $this->_media_type = $this->_media_types[$m[1]]['type'];
     }
+    else {
+      $this->_media_type = $this->_media_types['rdf'];
+    }
 
     $this->read_triples();
 
@@ -190,12 +193,14 @@ class PAGET_ResourceDescription extends SimpleGraph {
   // The default implementation rewrites URIs to the domain name suffixed with .local for assisting with testing
   // For example http://example.com/foo might map to http://example.com.local/foo if the application is being accessed from example.com.local
   function map_uri($uri) {
-    if (preg_match('~http://([^/]+)/~i', $uri, $m)) {
-      if ( $_SERVER["HTTP_HOST"] == $m[1] . '.local' ) {
-        return str_replace($m[1], $_SERVER["HTTP_HOST"], $uri);
-      }
-      else {
-        return $uri;
+    if (isset($_SERVER["HTTP_HOST"])) {
+      if (preg_match('~http://([^/]+)/~i', $uri, $m)) {
+        if ( $_SERVER["HTTP_HOST"] == $m[1] . '.local' ) {
+          return str_replace($m[1], $_SERVER["HTTP_HOST"], $uri);
+        }
+        else {
+          return $uri;
+        }
       }
     }
   }

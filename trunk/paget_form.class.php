@@ -15,16 +15,33 @@ class PAGET_Form {
   }
 
   function get_label() {
-    return 'Edit Resource'; 
+    return 'Edit ' . $this->_desc->get_label(); 
+  }
+  
+  function get_primary_resource_uri() {
+    return $this->_desc->get_primary_resource_uri(); 
+  }
+  
+  function get_index() {
+    return $this->_desc->get_index(); 
+  }
+
+  function get_triples() {
+    return $this->_desc->get_triples(); 
+  }
+
+  function has_triples_about($s) {
+    return $this->_desc->has_triples_about($s); 
   }
 
   function get_subresource_uri($name) {
-    $pos = strpos($this->_uri, '#');
+    $primary_resource_uri = $this->get_primary_resource_uri();
+    $pos = strpos($primary_resource_uri, '#');
     if ($pos === false) {
-      return $this->_uri . '#' . $name;
+      return $primary_resource_uri . '#' . $name;
     }
     else {
-      return substr($this->_uri, 0, $pos) . '#' . $name;
+      return substr($primary_resource_uri, 0, $pos) . '#' . $name;
     }
   }
 
@@ -38,10 +55,10 @@ class PAGET_Form {
 
   function add_type($resource_name, $uri) {
     if ($resource_name == 'this' ) {
-      $this->add_resource_triple($this->_uri, RDF_TYPE, $uri);    
+      $this->_desc->add_resource_triple($this->get_primary_resource_uri(), RDF_TYPE, $uri);    
     }
     else {
-      $this->add_resource_triple($this->get_subresource_uri($resource_name), RDF_TYPE, $uri);    
+      $this->_desc->add_resource_triple($this->get_subresource_uri($resource_name), RDF_TYPE, $uri);    
     }
   }
 

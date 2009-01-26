@@ -6,13 +6,14 @@ class PAGET_FormTest extends PHPUnit_Framework_TestCase {
 
   // Can be overridden by subclasses
   function make_form($uri) {
-    return new PAGET_Form($uri);
+    $desc = new PAGET_ResourceDescription($uri . '.rdf');
+    return new PAGET_Form('http://example.org/forms/foo', $desc);
   }
 
 
   function test_uri() {
     $form = $this->make_form("http://example.org/thing");
-    $this->assertEquals( "http://example.org/thing", $form->get_uri() );
+    $this->assertEquals( "http://example.org/thing", $form->get_primary_resource_uri() );
   }
 
   function test_get_subresource_uri_appends_name_as_fragment() {
@@ -33,9 +34,9 @@ class PAGET_FormTest extends PHPUnit_Framework_TestCase {
     $index = $form->get_index();
 
     $this->assertEquals("scooby",  $form->get_field_literal('name'));
-    $this->assertEquals(1,  count($index[$form->get_uri()]['http://example.org/name']));
-    $this->assertEquals('literal',  $index[$form->get_uri()]['http://example.org/name'][0]['type']);
-    $this->assertEquals("scooby",  $index[$form->get_uri()]['http://example.org/name'][0]['value']);
+    $this->assertEquals(1,  count($index[$form->get_primary_resource_uri()]['http://example.org/name']));
+    $this->assertEquals('literal',  $index[$form->get_primary_resource_uri()]['http://example.org/name'][0]['type']);
+    $this->assertEquals("scooby",  $index[$form->get_primary_resource_uri()]['http://example.org/name'][0]['value']);
   }
 
 
@@ -48,9 +49,9 @@ class PAGET_FormTest extends PHPUnit_Framework_TestCase {
     $index = $form->get_index();
 
     $this->assertEquals("scooby",  $form->get_field_literal('name'));
-    $this->assertEquals(1,  count($index[$form->get_uri()]['http://example.org/pet']));
-    $this->assertEquals('uri',  $index[$form->get_uri()]['http://example.org/pet'][0]['type']);
-    $this->assertEquals($form->get_subresource_uri('dog'),  $index[$form->get_uri()]['http://example.org/pet'][0]['value']);
+    $this->assertEquals(1,  count($index[$form->get_primary_resource_uri()]['http://example.org/pet']));
+    $this->assertEquals('uri',  $index[$form->get_primary_resource_uri()]['http://example.org/pet'][0]['type']);
+    $this->assertEquals($form->get_subresource_uri('dog'),  $index[$form->get_primary_resource_uri()]['http://example.org/pet'][0]['value']);
 
     $this->assertEquals(1,  count($index[$form->get_subresource_uri('dog')]['http://example.org/name']));
     $this->assertEquals('literal',  $index[$form->get_subresource_uri('dog')]['http://example.org/name'][0]['type']);
@@ -61,6 +62,7 @@ class PAGET_FormTest extends PHPUnit_Framework_TestCase {
     $form = $this->make_form("http://example.org/thing");
     $form->define_field('informant_residence',  'http://example.org/name', 'this');
     $form->from_form_data( array('informant_residence' => 'appledore' ) );
+    $this->assertTrue($form->has_triples_about("http://example.org/thing"));
     $this->assertEquals('appledore', $form->get_field_literal('informant_residence'));
   }
 
@@ -68,7 +70,7 @@ class PAGET_FormTest extends PHPUnit_Framework_TestCase {
   function test_from_form_data_ignores_unknown_fields() {
     $form = $this->make_form("http://example.org/thing");
     $form->from_form_data( array('blah_blah' => 'appledore' ) );
-    $this->assertEquals(0, count($form->get_triples()));
+    $this->assertFalse($form->has_triples_about("http://example.org/thing"));
   }
 
 
@@ -177,9 +179,9 @@ class PAGET_FormTest extends PHPUnit_Framework_TestCase {
     $form->add_type('this', 'http://example.org/Animal');
     $index = $form->get_index();
 
-    $this->assertEquals(1,  count($index[$form->get_uri()][RDF_TYPE]));
-    $this->assertEquals('uri',  $index[$form->get_uri()][RDF_TYPE][0]['type']);
-    $this->assertEquals('http://example.org/Animal',  $index[$form->get_uri()][RDF_TYPE][0]['value']);
+    $this->assertEquals(1,  count($index[$form->get_primary_resource_uri()][RDF_TYPE]));
+    $this->assertEquals('uri',  $index[$form->get_primary_resource_uri()][RDF_TYPE][0]['type']);
+    $this->assertEquals('http://example.org/Animal',  $index[$form->get_primary_resource_uri()][RDF_TYPE][0]['value']);
   }
 
   function test_add_subresource_type() {

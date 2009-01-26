@@ -14,12 +14,13 @@ class PAGET_DataWidget extends PAGET_Widget {
     $index = $this->desc->get_index();
     //$inverse_index = $this->desc->get_inverse_index();
     
-    $used_properties = array_keys($index[$resource_uri]);
-    $properties = array_diff(array_diff(array_merge($this->property_order, array_diff($used_properties, $this->property_order)), $this->ignore_properties), $this->image_properties);
-    
-    $this->emit_image_properties($resource_uri, $this->image_properties);
-    $this->emit_property_value_list($resource_uri, $properties);
-
+    if (array_key_exists($resource_uri, $index)) {
+      $used_properties = array_keys($index[$resource_uri]);
+      $properties = array_diff(array_diff(array_merge($this->property_order, array_diff($used_properties, $this->property_order)), $this->ignore_properties), $this->image_properties);
+      
+      $this->emit_image_properties($resource_uri, $this->image_properties);
+      $this->emit_property_value_list($resource_uri, $properties);
+    }
 
 //    $this->emit_group(array(RDFS_LABEL, DC_TITLE, FOAF_NAME, RDFS_COMMENT, DC_DESCRIPTION, 'http://purl.org/vocab/bio/0.1/olb', RDF_TYPE), $resource_uri, $desc);
 //    $this->emit_group('links', $resource_uri, $desc);

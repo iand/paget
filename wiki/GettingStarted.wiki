@@ -1,4 +1,4 @@
-#summary Getting Started
+#summary How to start using Paget
 = Introduction =
 
 Every Paget application starts by deriving a class from PAGET_UriSpace. This is the main dispatch point for requests in the application. It's responsible for identifying the resources identified by a group of URIs and the application can use it to specify the behaviour of their resources. 
@@ -20,4 +20,4 @@ This returns a list of augmentors that add triples to the description. Paget com
 This just calculates a sensible label for the description that could be used in the title of a web page or a link. The default behaviour is to look for an rdfs:label, dc:title or foaf:name for the primary resource in the description (which is the first one returned by get_resources). Applications could override this to use whatever heuristics make sense for their data.
 
 == get ==
-    This is the dispatch point for HTTP GET requests. At a later date I hope to handle other methods too, but for now Paget is a read only system
+This is the dispatch point for HTTP GET requests. At a later date I hope to handle other methods too, but for now Paget is a read only system

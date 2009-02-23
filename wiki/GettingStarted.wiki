@@ -29,3 +29,10 @@ RewriteRule ^.*$  index.php [L]
 }}}
 
 Those rewrite rules ensure that every request that isn't for a physical file or directory will be routed through index.php and hence through Paget. Paget will pass the requested URI to your UriSpace class which allows you to specify the behaviour needed
+
+Once you have the basic dispatch mechanism set up for Paget you can start customising the UriSpace for your needs. What you do next depends on how your data is stored or produced:
+
+* [UsingPagetWithTalisPlatformStores Talis Platform Store]
+* [UsingPagetWithLocalRdfFiles Local RDF File]
+
+  

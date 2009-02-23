@@ -1,10 +1,16 @@
 #summary How to start using Paget
+#labels howto
 
 Every Paget application starts by deriving a class from PAGET_UriSpace. This is the main dispatch point for requests in the application. It's responsible for identifying the resources identified by a group of URIs and the application can use it to specify the behaviour of their resources. 
 
-You need to ensure that Paget is called whenever someone requests one of the URIs that you have RDF data for. The best way to do this is to put a PHP file in a common root of the URIs and then configure your web server so it routes requests for those URIs to that PHP file.
+You need to ensure that the dispatch method of your UriSpace class is called whenever someone requests one of the URIs that you have RDF data for. The best way to do this is to put a PHP file in a common root of the URIs and then configure your web server so it routes requests for those URIs to that PHP file.
 
-For example, if you have URIs that follow the pattern http://example.com/things/foo then you might put your PHP file in the root directory of example.com or in the things subdirectory. 
+For example, if you have URIs that follow the pattern http://example.com/things/foo then you might put your PHP file in the root directory of example.com or in the things subdirectory. Your PHP file should contain something like:
+
+{{{
+$space = new CustomUriSpace();
+$space->dispatch();
+}}}
 
 If you're using Apache then put the following into your .htaccess file in the same directory as your PHP file (here it's assumed to be called index.php):
 

@@ -32,7 +32,7 @@ Those rewrite rules ensure that every request that isn't for a physical file or 
 
 Once you have the basic dispatch mechanism set up for Paget you can start customising the UriSpace for your needs. What you do next depends on how your data is stored or produced:
 
-* [UsingPagetWithTalisPlatformStores Talis Platform Store]
-* [UsingPagetWithLocalRdfFiles Local RDF File]
+ * [UsingPagetWithTalisPlatformStores Talis Platform Store]
+ * [UsingPagetWithLocalRdfFiles Local RDF File]
 
   

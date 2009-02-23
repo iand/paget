@@ -1,0 +1,19 @@
+#summary How to hook a Talis Platform store up to Paget
+#labels howto
+
+{{{
+class StoreBackedUriSpace extends PAGET_UriSpace {
+  function get_description($uri) {
+    return new StoreBackedResourceDescription($uri);
+  }
+}
+
+class StoreBackedResourceDescription extends PAGET_ResourceDescription {
+  function get_generators() {
+    return array( new PAGET_StoreDescribeGenerator("http://api.talis.com/stores/iand") );
+  }
+}
+
+$space = new StoreBackedUriSpace();
+$space->dispatch();
+}}}

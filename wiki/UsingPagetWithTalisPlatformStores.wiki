@@ -26,24 +26,13 @@ If you're using Apache then put the following into your .htaccess file in the sa
 
 {{{
 RewriteEngine on
-
-
-
 RewriteRule ^$  index.php [L]
 
-
-
 RewriteCond %{REQUEST_FILENAME}  -d
-
 RewriteRule  ^.*$  -  [L]
-
-
 
 RewriteCond %{REQUEST_FILENAME}  -f
-
 RewriteRule  ^.*$  -  [L]
-
-
 
 RewriteRule ^.*$  index.php [L]
 

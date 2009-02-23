@@ -1,8 +1,9 @@
 #summary How to use Paget to serve linked data from a local RDF file
+#labels howto
 
 You can use a local file to store the RDF that you want Paget to make browseable.
 
-See GettingStarted first for basic information about how Paget expects you to lay out your files. Put the following in index.php, making sure you substitute the URI of your platform store
+See GettingStarted first for basic information about how Paget expects you to lay out your files. Put the following in index.php:
 
 {{{
 class FileBasedUriSpace extends PAGET_UriSpace {
@@ -30,3 +31,5 @@ class FileBasedResourceDescription extends PAGET_ResourceDescription {
 $space = new FileBasedUriSpace();
 $space->dispatch();
 }}}
+
+If you have different files containing RDF for different URIs then you could modify the get_description method in FileBasedUriSpace to switch the filename depending on the URI being requested. 

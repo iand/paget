@@ -1,11 +1,10 @@
 #summary How to hook a Talis Platform store up to Paget
 #labels howto
 
-See GettingStarted first for basic information about how Paget expects you to lay your files out
 
 If you simply want to use a platform store to store your RDF then you can easily use Paget to provide a browseable interface. 
 
-Put the following in a file called index.php in a directory on your web server that corresponds with your data URIs. If your URIs were of the form http://example.com/things/foo then you could put index.php in either the root of example.com or in the things directory.
+See GettingStarted first for basic information about how Paget expects you to lay your files out. Put the following in index.php, making sure you substitute the URI of your platform store
 
 {{{
 class StoreBackedUriSpace extends PAGET_UriSpace {

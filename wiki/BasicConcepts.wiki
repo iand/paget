@@ -1,0 +1,10 @@
+#summary Understanding what Paget is and how it works
+
+Paget is [http://gettingreal.37signals.com/ch04_Make_Opinionated_Software.php Opinionated Software]. It has its own view of how resource-centric, data-driven web applications should be developed. If you don't share Paget's opinion then you're going to find using Paget tough going. If you happen to agree then Paget should smooth your way to building great applications.
+
+Paget is resource-centric. You define your application in terms of the resources it exposes to the Web. Resources are identified solely by their URI. This takes some getting used to for many web developers.
+
+Paget is data-driven, specifically RDF data. Paget is designed around RDF data and relies on it to represent the state of the application's resources.
+
+Because all data is represented as RDF internally, Paget can automatically represent that data in various formats such as XML, JSON, Turtle and HTML. Content negotiation for those data types is built in and Paget provides hooks for you to customise the HTML output which is where you ought to be applying your creative energy.
+

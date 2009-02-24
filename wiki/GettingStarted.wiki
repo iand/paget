@@ -1,5 +1,5 @@
 #summary How to start using Paget
-#labels howto
+#labels howto,Featured
 
 Every Paget application starts by deriving a class from PAGET_UriSpace. This is the main dispatch point for requests in the application. It's responsible for identifying the resources identified by a group of URIs and the application can use it to specify the behaviour of their resources. 
 

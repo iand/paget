@@ -35,4 +35,4 @@ Once you have the basic dispatch mechanism set up for Paget you can start custom
  * [UsingPagetWithTalisPlatformStores Talis Platform Store]
  * [UsingPagetWithLocalRdfFiles Local RDF File]
 
-  
+If you're feeling more adventurous then you ought to read DevelopingWithPaget

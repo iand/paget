@@ -1,7 +1,7 @@
 #summary Understanding what Paget is and how it works
 #labels Featured
 
-Paget is [http://gettingreal.37signals.com/ch04_Make_Opinionated_Software.php Opinionated Software]. It has its own view of how resource-centric, data-driven web applications should be developed. If you don't share Paget's opinion then you're going to find using Paget tough going. If you happen to agree then Paget should smooth your way to building great applications.
+Paget is [http://gettingreal.37signals.com/ch04_Make_Opinionated_Software.php Opinionated Software]. It has its own view of how resource-centric, data-driven web applications should be developed. If you don't share that opinion then you're going to find using Paget tough going. If you happen to agree then Paget should smooth your way to building great applications.
 
 *Paget is resource-centric*. You define your application in terms of the resources it exposes to the Web. Resources are identified solely by their URI. This takes some getting used to for many web developers.
 

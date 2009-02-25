@@ -25,3 +25,5 @@ Paget also has opinions about how your URIs should be constructed in your applic
 }}}
 
 That means every separate representation format has its own URI derived from the base URI of the abstract resource. If you're using a URI like {{{http://example.com/people/jack}}} to represent a person then {{{http://example.com/people/jack.html}}} will be the URI of the HTML page about him. {{{http://example.com/people/jack.rdf}}} will be the URI of the RDF version of the data about him. Paget will automatically add triples to the description's data that link the description to its abstract resource and to other representations of the data. 
+
+You might want to read GettingStarted next

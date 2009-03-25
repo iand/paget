@@ -10,8 +10,7 @@ class PAGET_StoreDescribeGenerator {
   
   function add_triples($resource_uri, &$desc) {
     $store = new Store($this->_store_uri);
-    $mb = $store->get_metabox();
-    $response = $mb->describe($resource_uri);
+    $response = $store->describe($resource_uri);
     if ($response->is_success()) {
       $desc->add_rdfxml($response->body);
     }

@@ -108,7 +108,10 @@ class PAGET_ResourceDescription extends SimpleGraph {
   }
 
   function get_label() {
-    $label = $this->get_first_literal($this->_primary_resource,RDFS_LABEL, '');
+    $label = $this->get_first_literal($this->_primary_resource,'http://www.w3.org/2004/02/skos/core#prefLabel', '');
+    if ( strlen($label) == 0) {
+      $label = $this->get_first_literal($this->_primary_resource,RDFS_LABEL, '');
+    }
     if ( strlen($label) == 0) {
       $label = $this->get_first_literal($this->_primary_resource,DC_TITLE, '');
     }

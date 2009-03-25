@@ -2,6 +2,7 @@
 
 class PAGET_Widget {
   var $desc;
+  var $inverse_index;
   var $prefixes = array (
                       'http://www.w3.org/1999/02/22-rdf-syntax-ns#' => 'rdf',
                       'http://www.w3.org/2000/01/rdf-schema#' => 'rdfs',
@@ -37,6 +38,7 @@ class PAGET_Widget {
   
   function __construct(&$desc) {
     $this->desc = $desc;
+    $this->inverse_index = $desc->get_inverse_index();
     $this->prefixes = array_merge($this->prefixes, $desc->get_prefix_mappings());
   }
   
@@ -176,6 +178,16 @@ class PAGET_Widget {
       }
     }
     
+    if (array_key_exists($resource_uri, $this->inverse_index)) {
+      foreach ($this->inverse_index[$resource_uri] as $property => $property_values) {
+        $label = ucfirst($this->desc->get_first_literal($property, 'http://purl.org/net/vocab/2004/03/label#inverseSingular'));
+        $formatted_label = $this->format_property_label($property, $label);
+        $formatted_value = $this->format_property_values($property, $property_values);
+
+        $data[] = array('label' => $formatted_label, 'value' => $formatted_value );
+      }
+    
+    }    
     $this->emit_key_value($data);   
   }    
 

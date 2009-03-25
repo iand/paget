@@ -1,5 +1,5 @@
 <?php
-
+// OBSOLETE
 
 class PAGET_SeeOtherRedirect {
   var $_uri;

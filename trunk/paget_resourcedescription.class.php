@@ -107,19 +107,25 @@ class PAGET_ResourceDescription extends SimpleGraph {
     return $this->_uri; 
   }
 
-  function get_label() {
-    $label = $this->get_first_literal($this->_primary_resource,'http://www.w3.org/2004/02/skos/core#prefLabel', '');
+  function get_label($resource_uri = null) {
+    if ($resource_uri == null) {
+      $resource_uri = $this->_primary_resource; 
+    }
+    $label = $this->get_first_literal($resource_uri,'http://www.w3.org/2004/02/skos/core#prefLabel', '');
     if ( strlen($label) == 0) {
-      $label = $this->get_first_literal($this->_primary_resource,RDFS_LABEL, '');
+      $label = $this->get_first_literal($resource_uri,RDFS_LABEL, '');
     }
     if ( strlen($label) == 0) {
-      $label = $this->get_first_literal($this->_primary_resource,DC_TITLE, '');
+      $label = $this->get_first_literal($resource_uri,DC_TITLE, '');
     }
     if ( strlen($label) == 0) {
-      $label = $this->get_first_literal($this->_primary_resource,FOAF_NAME, '');
+      $label = $this->get_first_literal($resource_uri,FOAF_NAME, '');
     }
     if ( strlen($label) == 0) {
-      $label = $this->_primary_resource;
+      $label = $this->desc->get_first_literal($resource_uri,RDF_VALUE, '');
+    }
+    if ( strlen($label) == 0) {
+      $label = $resource_uri;
     }    
    
     return $label;

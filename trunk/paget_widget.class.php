@@ -43,20 +43,7 @@ class PAGET_Widget {
   }
   
   function get_title($resource_uri) {
-    $label = $this->desc->get_first_literal($resource_uri,RDFS_LABEL, '');
-    if ( strlen($label) == 0) {
-      $label = $this->desc->get_first_literal($resource_uri,DC_TITLE, '');
-    }
-    if ( strlen($label) == 0) {
-      $label = $this->desc->get_first_literal($resource_uri,FOAF_NAME, '');
-    }
-    if ( strlen($label) == 0) {
-      $label = $this->desc->get_first_literal($resource_uri,RDF_VALUE, '');
-    }
-    if ( strlen($label) == 0) {
-      $label = $resource_uri;
-    }    
-    return $label;
+    return $this->desc->get_label($resource_uri);
   }
   
   function render($resource_uri) {

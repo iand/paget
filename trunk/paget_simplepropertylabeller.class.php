@@ -35,6 +35,8 @@ class PAGET_SimplePropertyLabeller {
                       'http://purl.org/dc/terms/1.1/type' => array('singular' => 'document type', 'plural' => 'document types', 'inverse' => 'is document type of'),
                       'http://purl.org/dc/terms/1.1/contributor' => array('singular' => 'contributor', 'plural' => 'contributors', 'inverse' => 'is contributor to'),
                       'http://purl.org/dc/terms/1.1/rights' => array('singular' => 'rights statement', 'plural' => 'right statements', 'inverse' => 'is rights statement for'),
+                      'http://purl.org/dc/terms/1.1/issued' => array('singular' => 'issued', 'plural' => 'issued', 'inverse' => 'is issued of'),
+                      'http://purl.org/dc/terms/1.1/updated' => array('singular' => 'updated', 'plural' => 'updated', 'inverse' => 'is updated of'),
                       'http://www.w3.org/2003/01/geo/wgs84_pos#lat' => array('singular' => 'latitude', 'plural' => 'latitudes', 'inverse' => 'is latitude of'),
                       'http://www.w3.org/2003/01/geo/wgs84_pos#long' => array('singular' => 'longitude', 'plural' => 'longitudes', 'inverse' => 'is longitude of'),
                       'http://www.w3.org/2002/07/owl#sameAs' => array('singular' => 'same as', 'plural' => 'same as', 'inverse' => 'same as'),

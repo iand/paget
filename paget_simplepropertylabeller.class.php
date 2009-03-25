@@ -47,7 +47,7 @@ class PAGET_SimplePropertyLabeller {
                       'http://purl.org/vocab/vann/changes' => array('singular' => 'change log', 'plural' => 'change logs', 'inverse' => 'is change log of'),
                       'http://www.w3.org/2004/02/skos/core#prefLabel' => array('singular' => 'preferred label', 'plural' => 'preferred labels', 'inverse' => 'is preferred label of'),
                       'http://www.w3.org/2004/02/skos/core#member' => array('singular' => 'member', 'plural' => 'members', 'inverse' => 'is a member of'),
-                      'http://www.w3.org/2004/02/skos/core#related' => array('singular' => 'related', 'plural' => 'related', 'inverse' => 'is related to'),
+                      'http://www.w3.org/2004/02/skos/core#related' => array('singular' => 'related to', 'plural' => 'related to', 'inverse' => 'related to'),
                       'http://www.w3.org/2004/02/skos/core#definition' => array('singular' => 'definition', 'plural' => 'definitions', 'inverse' => 'is definition of'),
                       'http://www.w3.org/2004/02/skos/core#context' => array('singular' => 'context', 'plural' => 'contexts', 'inverse' => 'is context of'),
 

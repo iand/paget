@@ -49,6 +49,13 @@ class PAGET_Form {
     $this->_resources[$resource_name] = array('uri' => $this->get_subresource_uri($resource_name), 'relation' => $relation_to_primary);
   }
 
+  /**
+   * Predefined field types:
+   * <ul>
+   * <li>note - a long text field, typically rendered as a textarea</li>
+   * <li>resource - a field for entering URIs</li>
+   * </ul>
+   **/
   function define_field($field_name, $property, $resource = 'this', $type = '') {
     $this->_fields[$field_name] = array('resource' => $resource, 'property' => $property, 'type' => $type);
   }

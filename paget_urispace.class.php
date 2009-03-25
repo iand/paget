@@ -51,10 +51,9 @@ class PAGET_UriSpace {
       $desc = $this->get_description($res->get_best_description_uri());
       $form = $this->get_form($this->_forms[$path], $uri, $desc);
       return $form;
-//      return new PAGET_PermanentRedirect('http://' . $_SERVER["HTTP_HOST"] . $this->_redirects[$path]);
     }
-    
-    if (preg_match('~^(.+)\.(html|rdf|xml|turtle|json)$~', $uri)) {
+
+    if ($this->is_ir($uri)) {
       $desc = $this->get_description($uri);
       if ($desc == null ) return null;
       if ($desc->is_valid()) return $desc;
@@ -157,6 +156,10 @@ class PAGET_UriSpace {
       return method_exists($resource, $method);
     }
     return FALSE;
+  }
+
+  function is_ir($uri) {
+    return preg_match('~^(.+)\.(html|rdf|xml|turtle|json)$~', $uri) ? TRUE : FALSE;
   }
 
 }

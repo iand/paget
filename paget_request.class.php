@@ -218,7 +218,7 @@ class PAGET_Request {
             }
             return $accepts;
         }
-    return array('text/html');
+      return array('*/*');
     }
   
   /**

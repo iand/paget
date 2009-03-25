@@ -27,6 +27,13 @@ class PAGET_SimplePropertyLabeller {
                       'http://purl.org/dc/elements/1.1/rights' => array('singular' => 'rights statement', 'plural' => 'right statements', 'inverse' => 'is rights statement for'),
                       'http://purl.org/dc/terms/isVersionOf' => array('singular' => 'version of', 'plural' => 'version of', 'inverse' => 'version'),
                       'http://purl.org/dc/terms/replaces' => array('singular' => 'replaces', 'plural' => 'replaces', 'inverse' => 'replaced by'),
+                      'http://purl.org/dc/terms/1.1/title' => array('singular' => 'title', 'plural' => 'titles', 'inverse' => 'is the title of'),
+                      'http://purl.org/dc/terms/1.1/description' => array('singular' => 'description', 'plural' => 'descriptions', 'inverse' => 'is description of'),
+                      'http://purl.org/dc/terms/1.1/date' => array('singular' => 'date', 'plural' => 'dates', 'inverse' => 'is date of'),
+                      'http://purl.org/dc/terms/1.1/identifier' => array('singular' => 'identifier', 'plural' => 'identifiers', 'inverse' => 'is identifier of'),
+                      'http://purl.org/dc/terms/1.1/type' => array('singular' => 'document type', 'plural' => 'document types', 'inverse' => 'is document type of'),
+                      'http://purl.org/dc/terms/1.1/contributor' => array('singular' => 'contributor', 'plural' => 'contributors', 'inverse' => 'is contributor to'),
+                      'http://purl.org/dc/terms/1.1/rights' => array('singular' => 'rights statement', 'plural' => 'right statements', 'inverse' => 'is rights statement for'),
                       'http://www.w3.org/2003/01/geo/wgs84_pos#lat' => array('singular' => 'latitude', 'plural' => 'latitudes', 'inverse' => 'is latitude of'),
                       'http://www.w3.org/2003/01/geo/wgs84_pos#long' => array('singular' => 'longitude', 'plural' => 'longitudes', 'inverse' => 'is longitude of'),
                       'http://www.w3.org/2002/07/owl#sameAs' => array('singular' => 'same as', 'plural' => 'same as', 'inverse' => 'same as'),
@@ -37,6 +44,13 @@ class PAGET_SimplePropertyLabeller {
                       'http://purl.org/vocab/vann/preferredNamespacePrefix' => array('singular' => 'preferred namespace prefix', 'plural' => 'preferred namespace prefixes', 'inverse' => 'is preferred namespace prefix for'),
                       'http://purl.org/vocab/vann/preferredNamespaceUri' => array('singular' => 'preferred namespace URI', 'plural' => 'preferred namespace URIs', 'inverse' => 'is preferred namespace URI for'),
                       'http://purl.org/vocab/vann/changes' => array('singular' => 'change log', 'plural' => 'change logs', 'inverse' => 'is change log of'),
+                      'http://www.w3.org/2004/02/skos/core#prefLabel' => array('singular' => 'preferred label', 'plural' => 'preferred labels', 'inverse' => 'is preferred label of'),
+                      'http://www.w3.org/2004/02/skos/core#member' => array('singular' => 'member', 'plural' => 'members', 'inverse' => 'is member of'),
+                      'http://www.w3.org/2004/02/skos/core#related' => array('singular' => 'related', 'plural' => 'related', 'inverse' => 'is related to'),
+                      'http://www.w3.org/2004/02/skos/core#definition' => array('singular' => 'definition', 'plural' => 'definitions', 'inverse' => 'is definition of'),
+                      'http://www.w3.org/2004/02/skos/core#context' => array('singular' => 'context', 'plural' => 'contexts', 'inverse' => 'is context of'),
+
+
                 );          
                 
                 

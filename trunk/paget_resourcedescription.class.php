@@ -122,7 +122,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
       $label = $this->get_first_literal($resource_uri,FOAF_NAME, '');
     }
     if ( strlen($label) == 0) {
-      $label = $this->desc->get_first_literal($resource_uri,RDF_VALUE, '');
+      $label = $this->get_first_literal($resource_uri,RDF_VALUE, '');
     }
     if ( strlen($label) == 0) {
       $label = $resource_uri;

@@ -67,17 +67,24 @@ class PAGET_SimplePropertyLabeller {
     $index = $desc->get_index();
     foreach ($index as $s => $p_list) {
       foreach ($p_list as $p => $val) {
-        if ( !array_key_exists($p, $labelled_properties) && array_key_exists($p, $this->_labels) ) {
-          if ( ! $desc->subject_has_property($p, RDFS_LABEL) ) {
-            $desc->add_literal_triple($p, RDFS_LABEL, $this->_labels[$p]['singular']);
+        if ( !array_key_exists($p, $labelled_properties) ) {
+          
+          if ( array_key_exists($p, $this->_labels) ) {
+            if ( ! $desc->subject_has_property($p, RDFS_LABEL) ) {
+              $desc->add_literal_triple($p, RDFS_LABEL, $this->_labels[$p]['singular']);
+            }
+            if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#plural') ) {
+              $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#plural', $this->_labels[$p]['plural']);
+            }
+            if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular') ) {
+              $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', $this->_labels[$p]['inverse']);
+            }
+            $labelled_properties[$p] = 1;
           }
-          if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#plural') ) {
-            $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#plural', $this->_labels[$p]['plural']);
-          }
-          if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular') ) {
-            $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', $this->_labels[$p]['inverse']);
-          }
-          $labelled_properties[$p] = 1;
+          else if (preg_match('~^http://www.w3.org/1999/02/22-rdf-syntax-ns#_(.+)$~', $p, $m)) {
+            $desc->add_literal_triple($p, RDFS_LABEL, 'Item ' . $m[1]);
+            $labelled_properties[$p] = 1;
+          }     
         }
       }
     }

@@ -99,9 +99,16 @@ class PAGET_Widget {
   function emit_table(&$data) {
     //return $this->emit_key_value($data);
     if ( count($data) > 0 ) {
+      $class = "odd";
       echo '<table width="100%">';
       foreach ($data as $item) {
-        echo '<tr><th valign="top" width="18%">' . $item['label'] . '</th><td valign="top">' . $item['value'] . '</td></tr>' . "\n";
+        echo '<tr><th valign="top" class="' . $class . '">' . $item['label'] . '</th><td valign="top" width="80%" class="' . $class . '">' . $item['value'] . '</td></tr>' . "\n";
+        if ($class == "odd") {
+          $class = "even";
+        }
+        else {
+          $class = "odd"; 
+        }
       }   
       echo '</table>';
     }
@@ -197,7 +204,7 @@ class PAGET_Widget {
         
         foreach ($property_values as $property_value) {
           if ($property_value['type'] == 'uri') {
-            echo '<div style="float:right;" class="image"><a href="' . htmlspecialchars($property_value['value'] ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
+            echo '<div style="float:right;"><a href="' . htmlspecialchars($property_value['value'] ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
           }
         }       
       }

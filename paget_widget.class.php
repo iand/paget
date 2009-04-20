@@ -197,7 +197,7 @@ class PAGET_Widget {
         
         foreach ($property_values as $property_value) {
           if ($property_value['type'] == 'uri') {
-            echo '<div style="float:right;"><a href="' . htmlspecialchars($property_value['value'] ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
+            echo '<div style="float:right;" class="image"><a href="' . htmlspecialchars($property_value['value'] ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
           }
         }       
       }

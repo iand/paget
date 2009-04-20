@@ -67,20 +67,18 @@ class PAGET_TableDataWidget extends PAGET_Widget {
 
   function format_property_values($property, &$property_values) {
     $formatted_value = '';
+    $values = array();
     
     for ($i = 0; $i < count($property_values); $i++) {
-      if ($i > 0) {
-        $formatted_value .= '<br/>';
-      }
       if ($property_values[$i]['type'] == 'uri') {
-        $formatted_value .= $this->link_uri($property_values[$i]['value']);
+        $values[] = $this->link_uri($property_values[$i]['value']);
       }
       else {
-        $formatted_value .= htmlspecialchars($property_values[$i]['value']); 
+        $values[] = htmlspecialchars($property_values[$i]['value']); 
       }
     }   
-
-    return $formatted_value;
+    sort($values);
+    return join('<br />', $values);
   }
 
 }

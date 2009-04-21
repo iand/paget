@@ -30,7 +30,7 @@ class PAGET_Response {
   );
     
   function __construct($status_code = 200, $body = NULL, $headers = array(), $request = NULL) {
-    $this->status_code = $statusCode;
+    $this->status_code = $status_code;
     $this->headers = $headers;
     $this->body = $body;
   }

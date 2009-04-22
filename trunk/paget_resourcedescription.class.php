@@ -8,7 +8,6 @@ class PAGET_ResourceDescription extends SimpleGraph {
   var $_media_types = array(
                           'rdf' => array('type' => 'application/rdf+xml', 'label' => 'RDF/XML'), 
                           'html' => array('type' => 'text/html',  'label' => 'HTML'),
-                          'xml' => array('type' => 'application/xml',  'label' => 'XML'),
                           'json' => array('type' => 'application/json',  'label' => 'JSON'),
                           'turtle' => array('type' => 'text/plain', 'label' => 'Turtle'),
                       );  

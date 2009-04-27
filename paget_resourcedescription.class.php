@@ -112,23 +112,23 @@ class PAGET_ResourceDescription extends SimpleGraph {
     if ($resource_uri == null) {
       $resource_uri = $this->_primary_resource; 
     }
-    $label = $this->get_first_literal($resource_uri,'http://www.w3.org/2004/02/skos/core#prefLabel', '');
+    $label = $this->get_first_literal($resource_uri,'http://www.w3.org/2004/02/skos/core#prefLabel', '', 'en');
     if ( strlen($label) == 0) {
-      $label = $this->get_first_literal($resource_uri,RDFS_LABEL, '');
+      $label = $this->get_first_literal($resource_uri,RDFS_LABEL, '', 'en');
     }
     if ( strlen($label) == 0) {
-      $label = $this->get_first_literal($resource_uri,DC_TITLE, '');
+      $label = $this->get_first_literal($resource_uri,DC_TITLE, '', 'en');
     }
     if ( strlen($label) == 0) {
       $label = $this->get_first_literal($resource_uri,'http://purl.org/rss/1.0/title', '', 'en');
     }
     if ( strlen($label) == 0) {
-      $label = $this->get_first_literal($resource_uri,FOAF_NAME, '');
+      $label = $this->get_first_literal($resource_uri,FOAF_NAME, '', 'en');
     }
     if ( strlen($label) == 0) {
-      $label = $this->get_first_literal($resource_uri,RDF_VALUE, '');
+      $label = $this->get_first_literal($resource_uri,RDF_VALUE, '', 'en');
     }
-    $subtitle = $this->get_first_literal($resource_uri,'http://open.vocab.org/terms/subtitle', '');  
+    $subtitle = $this->get_first_literal($resource_uri,'http://open.vocab.org/terms/subtitle', '', 'en');  
     if ( strlen($subtitle) > 0) {
       if ( strlen($label) == 0) {
         $label = $subtitle; 

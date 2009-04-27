@@ -1,6 +1,8 @@
 <?php
 require_once MORIARTY_DIR . 'simplegraph.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_response.class.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_template.class.php';
+
 class PAGET_ResourceDescription extends SimpleGraph {   
   var $_uri;
   var $_primary_resource;
@@ -180,17 +182,10 @@ class PAGET_ResourceDescription extends SimpleGraph {
     if ( null == $tmpl ) {
       $tmpl = PAGET_DIR . 'templates' .  DIRECTORY_SEPARATOR . 'plain.tmpl.html';
     }
+    
+    $template = new PAGET_Template($tmpl, $this);
+    return $template->execute();
 
-    ob_start();
-    try {
-      include($tmpl);
-      $buffer = ob_get_clean();
-      return $buffer;
-    } 
-    catch (Exception $ex) {
-      ob_end_clean();
-      throw $ex;
-    }
   }
 
 

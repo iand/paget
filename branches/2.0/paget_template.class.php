@@ -11,9 +11,11 @@ include_once "paget_bagwidget.class.php";
 
 class PAGET_Template {
   var $desc;
+  var $template_filename;
   var $excludes;
-  function __construct($desc) {
+  function __construct($template_filename, $desc) {
     $this->desc = $desc;  
+    $this->template_filename = $template_filename;  
 
     $this->table_widget = new PAGET_TableDataWidget($this->desc, $this);
     $this->seq_widget = new PAGET_SeqWidget($this->desc, $this);
@@ -22,6 +24,19 @@ class PAGET_Template {
     $this->ontology_widget = new PAGET_OntologyWidget($this->desc, $this);
     $this->term_widget = new PAGET_TermWidget($this->desc, $this);
 
+  }
+
+  function execute() {
+     ob_start();
+    try {
+      include($this->template_filename);
+      $buffer = ob_get_clean();
+      return $buffer;
+    } 
+    catch (Exception $ex) {
+      ob_end_clean();
+      throw $ex;
+    }   
   }
 
   function get_title($resource_uri = null) {

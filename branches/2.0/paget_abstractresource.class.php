@@ -30,7 +30,19 @@ class PAGET_AbstractResource {
         break;          
       }
     }
-    $desc_uri = $this->_uri . '.' . $extension;
+
+    $query = '';
+    foreach ($request->data as $key => $value) {
+      if (strlen($query) == 0) {
+        $query = '?';
+      }   
+      else {
+        $query .= '&';
+      }
+      $query .= urlencode($key) . '=' . urlencode($value);  
+    }
+
+    $desc_uri = $this->_uri . '.' . $extension . $query ;
     
     return new PAGET_Response(303, 'See ' . $desc_uri, array('location' => $desc_uri));
   }    

@@ -72,7 +72,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       foreach ($index[$resource_uri] as $p => $v_list) {
         foreach ($v_list as $v_info) {
           if ( $p == 'http://purl.org/vocab/vann/example' && $v_info['type'] == 'uri') {
-            $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example');
+            $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example', 'en');
             echo '<li><a href="' . htmlspecialchars($v_info['value']) . '">' . htmlspecialchars($title) . '</a></li>';
           }
         }     

@@ -180,7 +180,8 @@ class PAGET_ResourceDescription extends SimpleGraph {
       $response = new PAGET_Response(200, $this->get_html($urispace, $request), array('content-type'=>'text/html') );
     }
     else {
-      $response = new PAGET_Response(200, $this->to_rdfxml(), array('content-type'=>'application/rdf+xml') );
+      $response = new PAGET_Response(200, $this->get_html($urispace, $request), array('content-type'=>'text/html') );
+//      $response = new PAGET_Response(200, $this->to_rdfxml(), array('content-type'=>'application/rdf+xml') );
     }
     return $response;
   }

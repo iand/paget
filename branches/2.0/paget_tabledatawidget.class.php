@@ -31,7 +31,7 @@ class PAGET_TableDataWidget extends PAGET_Widget {
       $class = "odd";
       $ret .= '<table width="100%">';
       foreach ($data as $item) {
-        $ret .= '<tr><th valign="top" class="' . $class . '">' . $item['label'] . '</th><td valign="top" width="80%" class="' . $class . '">' . $item['value'] . '</td></tr>' . "\n";
+        $ret .= '<tr><th valign="top" class="' . $class . '"><div class="label">' . $item['label'] . '</div></th><td valign="top" width="80%" class="' . $class . '">' . $item['value'] . '</td></tr>' . "\n";
         if ($class == "odd") {
           $class = "even";
         }
@@ -68,18 +68,6 @@ class PAGET_TableDataWidget extends PAGET_Widget {
         }
       }
     }
-    /*
-    if (array_key_exists($resource_uri, $this->inverse_index)) {
-      foreach ($this->inverse_index[$resource_uri] as $property => $property_values) {
-        $label = ucfirst($this->desc->get_first_literal($property, 'http://purl.org/net/vocab/2004/03/label#inverseSingular'));
-        $formatted_label = $this->format_property_label($property, $label);
-        $formatted_value = $this->format_property_values($property, $property_values);
-
-        $data[] = array('label' => $formatted_label, 'value' => $formatted_value );
-      }
-    
-    } 
-    */   
     return $this->format_table($data);   
   }    
 
@@ -98,15 +86,11 @@ class PAGET_TableDataWidget extends PAGET_Widget {
         }
       }
       else {
-        $text = htmlspecialchars($property_values[$i]['value']);
-        if (isset($property_values[$i]['lang'])) {
-          $text .= ' <span class="lang">[' . htmlspecialchars($property_values[$i]['lang']) . ']</span>';
-        }
-        $values[] = $text;
+        $values[] = $this->template->render($property_values[$i], FALSE, TRUE);
       }
     }   
     sort($values);
-    return join('<br />', $values);
+    return join("\n", $values);
   }
 
 

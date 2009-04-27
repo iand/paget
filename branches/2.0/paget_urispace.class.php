@@ -45,13 +45,22 @@ class PAGET_UriSpace {
    * @param str method
    * @return bool
    */
-  function _has_http_method(&$resource, $method)
-  {
+  function _has_http_method(&$resource, $method) {
     if ($method == 'head' || $method == 'get' || $method == 'put' || $method == 'post' || $method == 'delete') {
       return method_exists($resource, $method);
     }
     return FALSE;
   }
 
+  function rewrite_uri($uri) {
+    if (preg_match('~http://([^/]+)/~i', $uri, $m)) {
+      if ( $_SERVER["HTTP_HOST"] == $m[1] . '.local' ) {
+        return str_replace($m[1], $_SERVER["HTTP_HOST"], $uri);
+      }
+      else {
+        return $uri;
+      }
+    }
+  }
 
 }

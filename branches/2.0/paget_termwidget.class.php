@@ -17,7 +17,7 @@ class PAGET_TermWidget extends PAGET_Widget {
     $ret .= '<div class="terminfo">' . htmlspecialchars($this->get_description($resource_uri)) . '</div>';
     
     $data = array();
-    $data[] = array('label' => 'Full URI', 'value' => '<a href="' . htmlspecialchars($this->remote_to_local($resource_uri)) . '" class="uri">' . htmlspecialchars($this->remote_to_local($resource_uri)) . '</a>');
+    $data[] = array('label' => 'Full URI', 'value' => $this->link_uri($resource_uri) );
     $ret .= $this->emit_key_value($data);  
 
 
@@ -202,19 +202,4 @@ class PAGET_TermWidget extends PAGET_Widget {
     
     return $ret;
   }
-  
-  function remote_to_local($uri) {
-    if (preg_match('~http://([^/]+)/~i', $uri, $m)) {
-      if ( $_SERVER["HTTP_HOST"] == $m[1] . '.local' ) {
-        return str_replace($m[1], $_SERVER["HTTP_HOST"], $uri);
-      }
-      else {
-        return $uri;
-      }
-    }
-  }  
-  
-
-
-
 }

@@ -6,6 +6,7 @@ include_once "paget_historywidget.class.php";
 include_once "paget_ontologywidget.class.php";
 include_once "paget_rsswidget.class.php";
 include_once "paget_seqwidget.class.php";
+include_once "paget_literalwidget.class.php";
 include_once "paget_bagwidget.class.php";
 
 
@@ -21,12 +22,13 @@ class PAGET_Template {
     $this->urispace = $urispace;  
     $this->request = $request;  
 
-    $this->table_widget = new PAGET_TableDataWidget($this->desc, $this);
-    $this->seq_widget = new PAGET_SeqWidget($this->desc, $this);
-    $this->bag_widget = new PAGET_BagWidget($this->desc, $this);
-    $this->rss_widget = new PAGET_RSSWidget($this->desc, $this);
-    $this->ontology_widget = new PAGET_OntologyWidget($this->desc, $this);
-    $this->term_widget = new PAGET_TermWidget($this->desc, $this);
+    $this->table_widget = new PAGET_TableDataWidget($this->desc, $this, $urispace);
+    $this->seq_widget = new PAGET_SeqWidget($this->desc, $this, $urispace);
+    $this->bag_widget = new PAGET_BagWidget($this->desc, $this, $urispace);
+    $this->rss_widget = new PAGET_RSSWidget($this->desc, $this, $urispace);
+    $this->ontology_widget = new PAGET_OntologyWidget($this->desc, $this, $urispace);
+    $this->term_widget = new PAGET_TermWidget($this->desc, $this, $urispace);
+    $this->literal_widget = new PAGET_LiteralWidget($this->desc, $this, $urispace);
 
   }
 
@@ -69,11 +71,11 @@ class PAGET_Template {
       else {
         $widget = $this->table_widget;
       }  
-      return $widget->render($resource_info, $inline, $brief);
     }
     else {
-      return htmlspecialchars($resource_info['value']);
+      $widget = $this->literal_widget;
     }
+    return $widget->render($resource_info, $inline, $brief);
   }
 
 

@@ -8,6 +8,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storesearch.class.
 class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
   var $_store_uri;
   var $_description_template;
+  var $_search_template;
   var $_ns = array();
   function __construct($store_uri) {
     $this->_store_uri = $store_uri; 
@@ -22,12 +23,16 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
       $type = $m[2];  
       if ($base_path == '/~search') {
         $query = isset($request->data["query"]) ? $request->data["query"] : '';
-        $desc = new PAGET_StoreSearch($request_uri, $type, $this->_store_uri, $query);
+        $offset = isset($request->data["offset"]) ? $request->data["offset"] : '0';
+        
+        $desc = new PAGET_StoreSearch($request_uri, $type, $this->_store_uri, $query, 30, $offset);
+        $desc->set_template($this->_search_template);
         return $desc;
       }
       else if (count($request->data) == 0) {
         $resource_uri = preg_replace("~\.local/~", "/", substr($request->uri, 0, strlen($request->uri)-strlen($type) - 1));
         $desc = new PAGET_StoreBackedResourceDescription($request_uri, $resource_uri, $type, $this->_store_uri); 
+        $desc->set_template($this->_description_template);
         foreach ($this->_ns as $short_name => $uri) {
           $desc->set_namespace_mapping($short_name , $uri);
         }
@@ -50,6 +55,10 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
   function set_description_template($filename) {
     $this->_description_template = $filename;    
   }
+  
+  function set_search_template($filename) {
+    $this->_search_template = $filename;    
+  }  
 
   function get_template($request) {
     return $this->_description_template;

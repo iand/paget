@@ -31,18 +31,13 @@ class PAGET_AbstractResource {
       }
     }
 
-    $query = '';
-    foreach ($request->data as $key => $value) {
-      if (strlen($query) == 0) {
-        $query = '?';
-      }   
-      else {
-        $query .= '&';
-      }
-      $query .= urlencode($key) . '=' . urlencode($value);  
-    }
+    $parts = parse_url($this->_uri);
 
-    $desc_uri = $this->_uri . '.' . $extension . $query ;
+    $base_uri = $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
+    $suffix = '';
+    if (strlen($parts['query']) > 0) $suffix = '?' . $parts['query']; 
+  
+    $desc_uri = $base_uri . '.' . $extension . $suffix ;
     
     return new PAGET_Response(303, 'See ' . $desc_uri, array('location' => $desc_uri));
   }    

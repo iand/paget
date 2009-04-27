@@ -12,10 +12,14 @@ include_once "paget_bagwidget.class.php";
 class PAGET_Template {
   var $desc;
   var $template_filename;
+  var $urispace;
+  var $request;
   var $excludes;
-  function __construct($template_filename, $desc) {
+  function __construct($template_filename, $desc, $urispace, $request) {
     $this->desc = $desc;  
     $this->template_filename = $template_filename;  
+    $this->urispace = $urispace;  
+    $this->request = $request;  
 
     $this->table_widget = new PAGET_TableDataWidget($this->desc, $this);
     $this->seq_widget = new PAGET_SeqWidget($this->desc, $this);

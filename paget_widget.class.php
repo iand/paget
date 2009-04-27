@@ -2,8 +2,9 @@
 
 class PAGET_Widget {
   var $ignore_properties = array();
-   var $desc;
+  var $desc;
   var $inverse_index;
+  var $urispace;
   var $prefixes = array (
                       'http://www.w3.org/1999/02/22-rdf-syntax-ns#' => 'rdf',
                       'http://www.w3.org/2000/01/rdf-schema#' => 'rdfs',
@@ -37,9 +38,10 @@ class PAGET_Widget {
                     );
 
   
-  function __construct(&$desc, $template) {
+  function __construct(&$desc, $template, $urispace) {
     $this->desc = $desc;
     $this->template = $template;
+    $this->urispace = $urispace;
     $this->inverse_index = $desc->get_inverse_index();
     $this->prefixes = array_merge($this->prefixes, $desc->get_prefix_mappings());
   }
@@ -49,19 +51,29 @@ class PAGET_Widget {
   }
   
   function render($resource_info, $inline = FALSE, $brief = FALSE) {
+    if ($resource_info['type'] == 'literal') return $this->render_literal($resource_info, $inline);
     return render_brief($resource_info, $inline);
   }
 
   function render_brief($resource_info, $inline = FALSE) {
-    $html = $this->link_uri($resource_info['value']);
+    if ($resource_info['type'] == 'literal') return $this->render_literal($resource_info, $inline);
+    $html = '<div class="res">' . $this->link_uri($resource_info['value']);
     $comment = $this->desc->get_description($resource_info['value']);
     if (strlen($comment) > 0) {
       $html.= '<br />' . htmlspecialchars($comment);  
     }
-    
+    $html .= '</div>';
     return $html;
   }
 
+  function render_literal($resource_info, $inline = FALSE, $brief = FALSE) {
+    $html = '<div class="lit">' . htmlspecialchars($resource_info['value']);
+    if (isset($resource_info['lang'])) {
+      $html .= ' <span class="lang">[' . htmlspecialchars($resource_info['lang']) . ']</span>';
+    }
+    $html .= '</div>';
+    return $html;
+  }
   
   function e($text) {
     echo(htmlspecialchars($text));  
@@ -82,7 +94,7 @@ class PAGET_Widget {
         $ret .= ' ';
       }   
 
-      $ret .= '<a href="' . htmlspecialchars($this->remote_to_local($uri)) . '" class="uri">';
+      $ret .= '<a href="' . htmlspecialchars($this->urispace->rewrite_uri($uri)) . '" class="uri">';
       $ret .= $label . '</a>';
       return $ret;
     }
@@ -105,10 +117,6 @@ class PAGET_Widget {
     return $uri;
   }
   
-  function remote_to_local($uri) {
-    return $this->desc->map_uri($uri);
-  }
-    
 
   function emit_key_value(&$data) {
     $ret = '';

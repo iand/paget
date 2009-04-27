@@ -31,6 +31,7 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
       }
       else if (count($request->data) == 0) {
         $resource_uri = preg_replace("~\.local/~", "/", substr($request->uri, 0, strlen($request->uri)-strlen($type) - 1));
+        
         $desc = new PAGET_StoreBackedResourceDescription($request_uri, $resource_uri, $type, $this->_store_uri); 
         $desc->set_template($this->_description_template);
         foreach ($this->_ns as $short_name => $uri) {
@@ -51,7 +52,7 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
   function set_namespace_mapping($short_name, $uri) {
     $this->_ns[$short_name] = $uri;
   }
-  
+
   function set_description_template($filename) {
     $this->_description_template = $filename;    
   }

@@ -8,6 +8,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
   var $_primary_resource;
   var $_is_valid;
   var $_type;
+  var $_template = null;
   var $_media_types = array(
                           'rdf' => array('type' => 'application/rdf+xml', 'label' => 'RDF/XML'), 
                           'html' => array('type' => 'text/html',  'label' => 'HTML'),
@@ -184,13 +185,20 @@ class PAGET_ResourceDescription extends SimpleGraph {
     return $response;
   }
 
+  function set_template($tmpl) {
+    $this->_template = $tmpl;  
+  }
+
   function get_html(&$urispace, &$request) {
-    $tmpl = $urispace->get_template($request);
+    $tmpl = $this->_template;
+    if ( null == $tmpl ) {
+      $tmpl = $urispace->get_template($request);
+    }
     if ( null == $tmpl ) {
       $tmpl = PAGET_DIR . 'templates' .  DIRECTORY_SEPARATOR . 'plain.tmpl.html';
     }
     
-    $template = new PAGET_Template($tmpl, $this);
+    $template = new PAGET_Template($tmpl, $this, $urispace, $request);
     return $template->execute();
 
   }

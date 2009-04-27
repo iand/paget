@@ -1,7 +1,8 @@
 <?php
 
 class PAGET_Widget {
-  var $desc;
+  var $ignore_properties = array();
+   var $desc;
   var $inverse_index;
   var $prefixes = array (
                       'http://www.w3.org/1999/02/22-rdf-syntax-ns#' => 'rdf',
@@ -36,8 +37,9 @@ class PAGET_Widget {
                     );
 
   
-  function __construct(&$desc) {
+  function __construct(&$desc, $template) {
     $this->desc = $desc;
+    $this->template = $template;
     $this->inverse_index = $desc->get_inverse_index();
     $this->prefixes = array_merge($this->prefixes, $desc->get_prefix_mappings());
   }
@@ -46,9 +48,20 @@ class PAGET_Widget {
     return $this->desc->get_label($resource_uri);
   }
   
-  function render($resource_uri) {
-  
+  function render($resource_info, $inline = FALSE, $brief = FALSE) {
+    return render_brief($resource_info, $inline);
   }
+
+  function render_brief($resource_info, $inline = FALSE) {
+    $html = $this->link_uri($resource_info['value']);
+    $comment = $this->desc->get_description($resource_info['value']);
+    if (strlen($comment) > 0) {
+      $html.= '<br />' . htmlspecialchars($comment);  
+    }
+    
+    return $html;
+  }
+
   
   function e($text) {
     echo(htmlspecialchars($text));  
@@ -96,23 +109,16 @@ class PAGET_Widget {
     return $this->desc->map_uri($uri);
   }
     
-  function emit_table(&$data) {
-    //return $this->emit_key_value($data);
-    if ( count($data) > 0 ) {
-      echo '<table width="100%">';
-      foreach ($data as $item) {
-        echo '<tr><th valign="top" width="18%">' . $item['label'] . '</th><td valign="top">' . $item['value'] . '</td></tr>' . "\n";
-      }   
-      echo '</table>';
-    }
-  }
 
   function emit_key_value(&$data) {
+    $ret = '';
     if ( count($data) > 0 ) {
       foreach ($data as $item) {
-        echo '<p><strong>' . $item['label'] . '</strong>: ' . $item['value'] . '</p>' . "\n";
+        $ret .= '<p><strong>' . $item['label'] . '</strong>: ' . $item['value'] . '</p>' . "\n";
       }   
     }
+    
+    return $ret;
   }
   
   function format_property_label($property, $label) {
@@ -197,12 +203,15 @@ class PAGET_Widget {
         
         foreach ($property_values as $property_value) {
           if ($property_value['type'] == 'uri') {
-            echo '<div style="float:right;"><a href="' . htmlspecialchars($property_value['value'] ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
+            $ret .= '<div style="float:right;"><a href="' . htmlspecialchars($property_value['value'] ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
           }
         }       
       }
     }
     
   }    
-
+  function ignore_properties($properties) {
+    $this->ignore_properties = array_merge($this->ignore_properties, $properties);
+  }
+  
 }

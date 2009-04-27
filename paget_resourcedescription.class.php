@@ -5,32 +5,21 @@ class PAGET_ResourceDescription extends SimpleGraph {
   var $_uri;
   var $_primary_resource;
   var $_is_valid;
+  var $_type;
   var $_media_types = array(
                           'rdf' => array('type' => 'application/rdf+xml', 'label' => 'RDF/XML'), 
                           'html' => array('type' => 'text/html',  'label' => 'HTML'),
-                          'xml' => array('type' => 'application/xml',  'label' => 'XML'),
                           'json' => array('type' => 'application/json',  'label' => 'JSON'),
                           'turtle' => array('type' => 'text/plain', 'label' => 'Turtle'),
                       );  
-  function __construct($uri) {
+  function __construct($desc_uri, $resource_uri, $type) {
     $this->_uri = $uri;
-
-
-    if ( preg_match('~\.(html|rdf|xml|turtle|json)$~', $this->_uri, $m) ) {
-      $this->_media_type = $this->_media_types[$m[1]]['type'];
-    }
-    else {
-      $this->_media_type = $this->_media_types['rdf'];
-    }
-
+    $this->_primary_resource = $resource_uri;
+    $this->_type = $type;
     $this->read_triples();
 
   } 
   
-  function get_media_type() {
-    return $this->_media_type;  
-  }
-
   function get_prefix_mappings() {
     return array_flip($this->_ns);  
   }
@@ -41,24 +30,12 @@ class PAGET_ResourceDescription extends SimpleGraph {
 
   function read_triples() {
     $resources = $this->get_resources();
-    $this->_primary_resource = $this->_uri;
     if (count($resources) > 0) {
       $this->_primary_resource = $resources[0];
     }
-    
-    $this->add_resource_triple( $this->_uri, RDF_TYPE, FOAF_DOCUMENT );
-    $this->add_resource_triple( $this->_uri, RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
-    $this->add_resource_triple( $this->_uri, FOAF_PRIMARYTOPIC, $this->_primary_resource );
+    $this->add_representation_triples();  
+  
 
-    foreach ($this->_media_types as $extension => $type_info) {
-      if ( $type_info['type'] != $this->_media_type) {
-        $this->add_resource_triple( $this->_uri, 'http://purl.org/dc/terms/hasFormat', $this->map_uri($this->_primary_resource) . '.' . $extension );
-        $this->add_resource_triple( $this->map_uri($this->_primary_resource) . '.' . $extension, RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
-        $this->add_resource_triple( $this->map_uri($this->_primary_resource) . '.' . $extension, RDF_TYPE, FOAF_DOCUMENT );
-        $this->add_literal_triple( $this->map_uri($this->_primary_resource) . '.' . $extension , 'http://purl.org/dc/elements/1.1/format', $type_info['type'] );
-        $this->add_literal_triple( $this->map_uri($this->_primary_resource) . '.' . $extension , RDFS_LABEL, $type_info['label'] );
-      }
-    }
     
     
     $this->_is_valid = false;
@@ -81,12 +58,26 @@ class PAGET_ResourceDescription extends SimpleGraph {
     }    
   }
 
-  function get_resources() {
-    $resources = array();
-    if ( preg_match('~^(.+)\.(html|rdf|xml|turtle|json)$~', $this->_uri, $m) ) {
-      $uri = preg_replace("~\.local/~", "/", $m[1]);
-      $resources[] = $uri;  
+  function add_representation_triples() {
+    $this->add_resource_triple( $this->_uri, RDF_TYPE, FOAF_DOCUMENT );
+    $this->add_resource_triple( $this->_uri, RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
+    $this->add_resource_triple( $this->_uri, FOAF_PRIMARYTOPIC, $this->_primary_resource );
+
+    foreach ($this->_media_types as $extension => $type_info) {
+      if ( $extension != $this->_type) {
+        $this->add_resource_triple( $this->_uri, 'http://purl.org/dc/terms/hasFormat', $this->map_uri($this->_primary_resource) . '.' . $extension );
+        $this->add_resource_triple( $this->map_uri($this->_primary_resource) . '.' . $extension, RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
+        $this->add_resource_triple( $this->map_uri($this->_primary_resource) . '.' . $extension, RDF_TYPE, FOAF_DOCUMENT );
+        $this->add_literal_triple( $this->map_uri($this->_primary_resource) . '.' . $extension , 'http://purl.org/dc/elements/1.1/format', $type_info['type'] );
+        $this->add_literal_triple( $this->map_uri($this->_primary_resource) . '.' . $extension , RDFS_LABEL, $type_info['label'] );
+      }
     }
+    
+  }
+
+
+  function get_resources() {
+    $resources = array($this->_primary_resource);
     return $resources;
   }
 
@@ -119,40 +110,68 @@ class PAGET_ResourceDescription extends SimpleGraph {
       $label = $this->get_first_literal($resource_uri,DC_TITLE, '');
     }
     if ( strlen($label) == 0) {
+      $label = $this->get_first_literal($resource_uri,'http://purl.org/rss/1.0/title', '', 'en');
+    }
+    if ( strlen($label) == 0) {
       $label = $this->get_first_literal($resource_uri,FOAF_NAME, '');
     }
     if ( strlen($label) == 0) {
       $label = $this->get_first_literal($resource_uri,RDF_VALUE, '');
     }
+    $subtitle = $this->get_first_literal($resource_uri,'http://open.vocab.org/terms/subtitle', '');  
+    if ( strlen($subtitle) > 0) {
+      if ( strlen($label) == 0) {
+        $label = $subtitle; 
+      }
+      else {
+        $label .= ': ' . $subtitle;        
+      }
+    } 
     if ( strlen($label) == 0) {
       $label = $resource_uri;
-    }    
-   
+    }  
+    
+  
     return $label;
   }
   
+  
+  function get_description($resource_uri = null) {
+    if ($resource_uri == null) {
+      $resource_uri = $this->_primary_resource; 
+    }
+    $text = $this->get_first_literal($resource_uri,RDFS_COMMENT, '', 'en');
+    if ( strlen($text) == 0) {
+      $text = $this->get_first_literal($resource_uri,'http://purl.org/dc/terms/description', '', 'en');
+    }
+    if ( strlen($text) == 0) {
+      $text = $this->get_first_literal($resource_uri,'http://purl.org/rss/1.0/description', '', 'en');
+    }
+    if ( strlen($text) == 0) {
+      $text = $this->get_first_literal($resource_uri,'http://vocab.org/bio/0.1/olb', '', 'en');
+    }   
+    return $text;
+  }  
   function get(&$urispace,&$request) {
+    
 
-    $response = new PAGET_Response(200);
+    $accepts = $request->accept;
 
-    switch ($this->_media_type) {
-      case 'application/xml':
-      case 'application/rdf+xml':
-        $response->set_body($this->to_rdfxml());
-        break;
-      case 'application/json':
-        $response->set_body($this->to_json());
-        break;
-      case 'text/plain':
-        $response->set_body($this->to_turtle());
-        break;
-      case 'text/html':
-        $response->set_body($this->get_html($urispace, $request));
-        break;
-      default:    
-         $response->set_body($this->to_rdfxml());
-    }    
-    $response->configure($this, $request);
+    if ($this->_type == 'rdf') {
+      $response = new PAGET_Response(200, $this->to_rdfxml(), array('content-type'=>'application/rdf+xml') );
+    }
+    else if ($this->_type == 'json') {
+      $response = new PAGET_Response(200, $this->to_json(), array('content-type'=>'application/json') );
+    }
+    else if ($this->_type == 'turtle') {
+      $response = new PAGET_Response(200, $this->to_turtle(), array('content-type'=>'text/plain') );
+    }
+    else if ($this->_type == 'html') {
+      $response = new PAGET_Response(200, $this->get_html($urispace, $request), array('content-type'=>'text/html') );
+    }
+    else {
+      $response = new PAGET_Response(200, $this->to_rdfxml(), array('content-type'=>'application/rdf+xml') );
+    }
     return $response;
   }
 

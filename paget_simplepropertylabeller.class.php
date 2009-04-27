@@ -26,17 +26,23 @@ class PAGET_SimplePropertyLabeller {
                       'http://purl.org/dc/elements/1.1/type' => array('singular' => 'document type', 'plural' => 'document types', 'inverse' => 'is document type of'),
                       'http://purl.org/dc/elements/1.1/contributor' => array('singular' => 'contributor', 'plural' => 'contributors', 'inverse' => 'is contributor to'),
                       'http://purl.org/dc/elements/1.1/rights' => array('singular' => 'rights statement', 'plural' => 'right statements', 'inverse' => 'is rights statement for'),
+                      'http://purl.org/dc/elements/1.1/subject' => array('singular' => 'subject', 'plural' => 'subjects', 'inverse' => 'is subject for'),
+                      'http://purl.org/dc/elements/1.1/publisher' => array('singular' => 'publisher', 'plural' => 'publishers', 'inverse' => 'is publisher of'),
                       'http://purl.org/dc/terms/isVersionOf' => array('singular' => 'version of', 'plural' => 'version of', 'inverse' => 'version'),
                       'http://purl.org/dc/terms/replaces' => array('singular' => 'replaces', 'plural' => 'replaces', 'inverse' => 'replaced by'),
-                      'http://purl.org/dc/terms/1.1/title' => array('singular' => 'title', 'plural' => 'titles', 'inverse' => 'is the title of'),
-                      'http://purl.org/dc/terms/1.1/description' => array('singular' => 'description', 'plural' => 'descriptions', 'inverse' => 'is description of'),
-                      'http://purl.org/dc/terms/1.1/date' => array('singular' => 'date', 'plural' => 'dates', 'inverse' => 'is date of'),
-                      'http://purl.org/dc/terms/1.1/identifier' => array('singular' => 'identifier', 'plural' => 'identifiers', 'inverse' => 'is identifier of'),
-                      'http://purl.org/dc/terms/1.1/type' => array('singular' => 'document type', 'plural' => 'document types', 'inverse' => 'is document type of'),
-                      'http://purl.org/dc/terms/1.1/contributor' => array('singular' => 'contributor', 'plural' => 'contributors', 'inverse' => 'is contributor to'),
-                      'http://purl.org/dc/terms/1.1/rights' => array('singular' => 'rights statement', 'plural' => 'right statements', 'inverse' => 'is rights statement for'),
-                      'http://purl.org/dc/terms/1.1/issued' => array('singular' => 'issued', 'plural' => 'issued', 'inverse' => 'is issued of'),
-                      'http://purl.org/dc/terms/1.1/updated' => array('singular' => 'updated', 'plural' => 'updated', 'inverse' => 'is updated of'),
+                      'http://purl.org/dc/terms/title' => array('singular' => 'title', 'plural' => 'titles', 'inverse' => 'is the title of'),
+                      'http://purl.org/dc/terms/description' => array('singular' => 'description', 'plural' => 'descriptions', 'inverse' => 'is description of'),
+                      'http://purl.org/dc/terms/date' => array('singular' => 'date', 'plural' => 'dates', 'inverse' => 'is date of'),
+                      'http://purl.org/dc/terms/identifier' => array('singular' => 'identifier', 'plural' => 'identifiers', 'inverse' => 'is identifier of'),
+                      'http://purl.org/dc/terms/type' => array('singular' => 'document type', 'plural' => 'document types', 'inverse' => 'is document type of'),
+                      'http://purl.org/dc/terms/contributor' => array('singular' => 'contributor', 'plural' => 'contributors', 'inverse' => 'is contributor to'),
+                      'http://purl.org/dc/terms/rights' => array('singular' => 'rights statement', 'plural' => 'right statements', 'inverse' => 'is rights statement for'),
+                      'http://purl.org/dc/terms/issued' => array('singular' => 'issued', 'plural' => 'issued', 'inverse' => 'is issued of'),
+                      'http://purl.org/dc/terms/updated' => array('singular' => 'updated', 'plural' => 'updated', 'inverse' => 'is updated of'),
+                      'http://purl.org/dc/terms/source' => array('singular' => 'source', 'plural' => 'sources', 'inverse' => 'is source of'),
+                      'http://purl.org/dc/terms/subject' => array('singular' => 'subject', 'plural' => 'subjects', 'inverse' => 'is subject of'),
+                      'http://purl.org/dc/terms/language' => array('singular' => 'language', 'plural' => 'languages', 'inverse' => 'is language of'),
+                      'http://purl.org/dc/terms/publisher' => array('singular' => 'publisher', 'plural' => 'publishers', 'inverse' => 'is publisher of'),
                       'http://www.w3.org/2003/01/geo/wgs84_pos#lat' => array('singular' => 'latitude', 'plural' => 'latitudes', 'inverse' => 'is latitude of'),
                       'http://www.w3.org/2003/01/geo/wgs84_pos#long' => array('singular' => 'longitude', 'plural' => 'longitudes', 'inverse' => 'is longitude of'),
                       'http://www.w3.org/2002/07/owl#sameAs' => array('singular' => 'same as', 'plural' => 'same as', 'inverse' => 'same as'),
@@ -52,6 +58,9 @@ class PAGET_SimplePropertyLabeller {
                       'http://www.w3.org/2004/02/skos/core#related' => array('singular' => 'related to', 'plural' => 'related to', 'inverse' => 'related to'),
                       'http://www.w3.org/2004/02/skos/core#definition' => array('singular' => 'definition', 'plural' => 'definitions', 'inverse' => 'is definition of'),
                       'http://www.w3.org/2004/02/skos/core#context' => array('singular' => 'context', 'plural' => 'contexts', 'inverse' => 'is context of'),
+                      'http://rdfs.org/ns/void#exampleResource' => array('singular' => 'example resource', 'plural' => 'example resources', 'inverse' => 'is example resource of'),
+                      'http://rdfs.org/ns/void#sparqlEndpoint' => array('singular' => 'SPARQL endpoint', 'plural' => 'SPARQL endpoints', 'inverse' => 'is SPARQL endpoint of'),
+                      'http://open.vocab.org/terms/subtitle' => array('singular' => 'sub-title', 'plural' => 'sub-titles', 'inverse' => 'is sub-title of'),
 
 
                 );          
@@ -67,17 +76,24 @@ class PAGET_SimplePropertyLabeller {
     $index = $desc->get_index();
     foreach ($index as $s => $p_list) {
       foreach ($p_list as $p => $val) {
-        if ( !array_key_exists($p, $labelled_properties) && array_key_exists($p, $this->_labels) ) {
-          if ( ! $desc->subject_has_property($p, RDFS_LABEL) ) {
-            $desc->add_literal_triple($p, RDFS_LABEL, $this->_labels[$p]['singular']);
+        if ( !array_key_exists($p, $labelled_properties) ) {
+          
+          if ( array_key_exists($p, $this->_labels) ) {
+            if ( ! $desc->subject_has_property($p, RDFS_LABEL) ) {
+              $desc->add_literal_triple($p, RDFS_LABEL, $this->_labels[$p]['singular']);
+            }
+            if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#plural') ) {
+              $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#plural', $this->_labels[$p]['plural']);
+            }
+            if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular') ) {
+              $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', $this->_labels[$p]['inverse']);
+            }
+            $labelled_properties[$p] = 1;
           }
-          if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#plural') ) {
-            $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#plural', $this->_labels[$p]['plural']);
-          }
-          if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular') ) {
-            $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', $this->_labels[$p]['inverse']);
-          }
-          $labelled_properties[$p] = 1;
+          else if (preg_match('~^http://www.w3.org/1999/02/22-rdf-syntax-ns#_(.+)$~', $p, $m)) {
+            $desc->add_literal_triple($p, RDFS_LABEL, 'Item ' . $m[1]);
+            $labelled_properties[$p] = 1;
+          }     
         }
       }
     }

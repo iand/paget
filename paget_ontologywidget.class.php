@@ -3,14 +3,10 @@ require_once "paget_widget.class.php";
 require_once MORIARTY_DIR . "httprequest.class.php";
 
 class PAGET_OntologyWidget extends PAGET_Widget {
-  var $desc;
-  
-  function __construct(&$desc) {
-    $this->desc = $desc;  
-  }
   
   
-  function render($resource_uri) {
+  function render($resource_info, $inline = FALSE, $brief = FALSE) {
+    if ($brief) return $this->render_brief($resource_info, $inline);
     $inline = array();
     
     $index = $this->desc->get_index();

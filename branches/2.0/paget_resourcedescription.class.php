@@ -15,7 +15,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
                           'turtle' => array('type' => 'text/plain', 'label' => 'Turtle'),
                       );  
   function __construct($desc_uri, $resource_uri, $type) {
-    $this->_uri = $uri;
+    $this->_uri = $desc_uri;
     $this->_primary_resource = $resource_uri;
     $this->_type = $type;
     $this->read_triples();
@@ -65,16 +65,23 @@ class PAGET_ResourceDescription extends SimpleGraph {
     $this->add_resource_triple( $this->_uri, RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
     $this->add_resource_triple( $this->_uri, FOAF_PRIMARYTOPIC, $this->_primary_resource );
 
-    foreach ($this->_media_types as $extension => $type_info) {
-      if ( $extension != $this->_type) {
-        $this->add_resource_triple( $this->_uri, 'http://purl.org/dc/terms/hasFormat', $this->map_uri($this->_primary_resource) . '.' . $extension );
-        $this->add_resource_triple( $this->map_uri($this->_primary_resource) . '.' . $extension, RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
-        $this->add_resource_triple( $this->map_uri($this->_primary_resource) . '.' . $extension, RDF_TYPE, FOAF_DOCUMENT );
-        $this->add_literal_triple( $this->map_uri($this->_primary_resource) . '.' . $extension , 'http://purl.org/dc/elements/1.1/format', $type_info['type'] );
-        $this->add_literal_triple( $this->map_uri($this->_primary_resource) . '.' . $extension , RDFS_LABEL, $type_info['label'] );
+    $parts = parse_url($this->_uri);
+
+    if ( preg_match('~^(.+)\.(html|rdf|json|turtle)$~', $parts['path'], $m)) {
+      $base_uri = $parts['scheme'] . '://' . $parts['host'] . $m[1];
+      $suffix = '';
+      if (strlen($parts['query']) > 0) $suffix = '?' . $parts['query']; 
+      
+      foreach ($this->_media_types as $extension => $type_info) {
+        if ( $extension != $this->_type) {
+          $this->add_resource_triple( $this->_uri, 'http://purl.org/dc/terms/hasFormat', $base_uri. '.' . $extension . $suffix );
+          $this->add_resource_triple( $base_uri. '.' . $extension . $suffix , RDF_TYPE, 'http://purl.org/dc/dcmitype/Text' );
+          $this->add_resource_triple( $base_uri. '.' . $extension . $suffix , RDF_TYPE, FOAF_DOCUMENT );
+          $this->add_literal_triple( $base_uri. '.' . $extension . $suffix  , 'http://purl.org/dc/elements/1.1/format', $type_info['type'] );
+          $this->add_literal_triple( $base_uri. '.' . $extension . $suffix  , RDFS_LABEL, $type_info['label'] );
+        }
       }
-    }
-    
+    }    
   }
 
 

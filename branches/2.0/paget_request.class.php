@@ -116,6 +116,7 @@ class PAGET_Request {
     $this->method = $this->_get_http_method();
     list($this->full_path, $this->url) = $this->_get_url();
     $this->uri = 'http://' . $_SERVER["SERVER_NAME"]. $this->full_path;
+    if ($_SERVER["QUERY_STRING"]) $this->uri .= '?' . $_SERVER["QUERY_STRING"];
     $this->accept = $this->_getAcceptHeader();
     $this->language = $this->_getLanguageHeader();
     $this->encoding = $this->_getRequestAcceptEncoding();

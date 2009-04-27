@@ -30,9 +30,10 @@ class PAGET_Response {
   );
     
   function __construct($status_code = 200, $body = NULL, $headers = array(), $request = NULL) {
-    $this->status_code = $statusCode;
+    $this->status_code = $status_code;
     $this->headers = $headers;
     $this->body = $body;
+    $this->request = $request;
   }
   
   function set_body($body) {
@@ -40,7 +41,6 @@ class PAGET_Response {
   }
 
   function configure(&$resource, &$request) {
-    $this->headers['Content-Type'] = $resource->_media_type;
     if ($request->encoding && $this->body) {
       //$this->headers['Content-Type'] = $resource->_media_type.'; charset=UTF-8';
       //$this->encode_content($request->encoding);

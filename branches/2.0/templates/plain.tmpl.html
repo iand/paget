@@ -1,27 +1,8 @@
 <?php
-include_once PAGET_DIR . "paget_termwidget.class.php";
-include_once PAGET_DIR . "paget_datawidget.class.php";
-include_once PAGET_DIR . "paget_historywidget.class.php";
-include_once PAGET_DIR . "paget_ontologywidget.class.php";
 
-  $resource_uri = $this->get_primary_resource_uri();
-  $document_base = $resource_uri;
-  if ( preg_match('~^(.+)' . preg_quote($this->_config['format_delimiter']) . 'html$~', $this->get_uri(), $m)) {
-    $document_base = $m[1];
-  }
-  
-  $title = $this->get_label();
+  $resource_uri = $this->desc->get_primary_resource_uri();
+  $title = $this->get_title($resource_uri);
 
-  $widgets= array();
-  if ( $this->has_resource_triple($resource_uri, RDF_TYPE, RDF_PROPERTY) || $this->has_resource_triple($resource_uri, RDF_TYPE, RDFS_CLASS) ) {
-    $widgets[] = new PAGET_TermWidget($this);
-  }
-  else if ( $this->has_resource_triple($resource_uri, RDF_TYPE, 'http://www.w3.org/2002/07/owl#Ontology')  ) {
-    $widgets[] = new PAGET_OntologyWidget($this);
-  }
-  else {
-    $widgets[] = new PAGET_DataWidget($this);
-  }  
   
   echo "<?";
 
@@ -30,16 +11,16 @@ xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
   <head>
-    <title><?php e($widgets[0]->get_title($resource_uri));?></title>
+    <title><?php e($title);?></title>
 
 <?php
-  $formats = $this->get_resource_triple_values($this->get_uri(), 'http://purl.org/dc/terms/hasFormat');
+  $formats = $this->desc->get_resource_triple_values($this->desc->get_uri(), 'http://purl.org/dc/terms/hasFormat');
   foreach ($formats as $format_uri) {
-    $media_type = $this->get_first_literal($format_uri, 'http://purl.org/dc/elements/1.1/format');  
-    $label = $this->get_first_literal($format_uri, RDFS_LABEL, $media_type);  
+    $media_type = $this->desc->get_first_literal($format_uri, 'http://purl.org/dc/elements/1.1/format');  
+    $label = $this->desc->get_first_literal($format_uri, RDFS_LABEL, $media_type);  
     echo '    <link rel="alternate" type="' . htmlspecialchars($media_type) . '" href="' . htmlspecialchars($format_uri) . '" title="' . htmlspecialchars($label) . ' version of this document"/>' . "\n";
   }
-?>
+?> 
     <style media="screen" type="text/css">
       /* <!-- */
       body {margin:0; padding:0; border:0; width:100%; background:#fff;font-size:90%;}
@@ -69,22 +50,26 @@ xml version="1.0" encoding="utf-8"?>
       code.xml .attrVal {color: #666666;background: transparent;}
       code.xml .highlight {background: #ffff00;}
       pre {border: 1px #999999 dotted;background-color: #eeeeee; color: #000000;}
-  
-
+      table {color: #7F7F7F; border-collapse: collapse;}
+      td, th {padding: 10px 5px; text-align: left;}
+      td.odd, th.odd {background-color: #F7F7F7;color: #666}
+      tr:hover {background-color: #EEE;color: #333}
       /* --> */
     </style>
   </head>
   <body>
 
   <div id="header">
-    <h1><?php echo(htmlspecialchars($widgets[0]->get_title($resource_uri))) ?></h1>
+    <h1><?php e($title);?></h1>
     <p id="layoutdims">This data in other formats:
+    
     <?php
-      $formats = $this->get_resource_triple_values($this->get_uri(), 'http://purl.org/dc/terms/hasFormat');
+    
+      $formats = $this->desc->get_resource_triple_values($this->desc->get_uri(), 'http://purl.org/dc/terms/hasFormat');
       $done_first = false;
       foreach ($formats as $format_uri) {
-        $media_type = $this->get_first_literal($format_uri, 'http://purl.org/dc/elements/1.1/format');  
-        $label = $this->get_first_literal($format_uri, RDFS_LABEL, $media_type);  
+        $media_type = $this->desc->get_first_literal($format_uri, 'http://purl.org/dc/elements/1.1/format');  
+        $label = $this->desc->get_first_literal($format_uri, RDFS_LABEL, $media_type);  
         
         if ($done_first) {
           echo ' | ';
@@ -99,59 +84,15 @@ xml version="1.0" encoding="utf-8"?>
     <div class="colmask fullpage">
       <div class="col1">
       <?php
-        
-
-        foreach ($widgets as $widget) {
-          $widget->render($resource_uri);
-        }  
-
-        $resources = array();
-        $index = $this->get_index();
-        foreach ($index as $subject => $subject_data) {
-          if (strpos($subject, $resource_uri . '#') === 0) {
-            $resources[] = $subject;
-          }
-        }
-
-        foreach ($resources as $resource_uri_to_describe) {
-          $secondary_widgets = array();
-          if ( $this->has_resource_triple($resource_uri_to_describe, RDF_TYPE, RDF_PROPERTY) || $this->has_resource_triple($resource_uri_to_describe, RDF_TYPE, RDFS_CLASS) ) {
-            $secondary_widgets[] = new PAGET_TermWidget($this);
-          }
-          else if ( $this->has_resource_triple($resource_uri_to_describe, RDF_TYPE, 'http://www.w3.org/2002/07/owl#Ontology')  ) {
-            $secondary_widgets[] = new PAGET_OntologyWidget($this);
-          }
-          else {
-            $secondary_widgets[] = new PAGET_DataWidget($this);
-          }    
-
-        
-          echo '<h2>';
-          echo(htmlspecialchars($secondary_widgets[0]->get_title($resource_uri_to_describe)));
-          echo '</h2>';
-          foreach ($secondary_widgets as $widget) {
-            $widget->render($resource_uri_to_describe);
-          }  
-
-        }
-        
-
+        echo $this->render(array('value' => $resource_uri, 'type'=>'uri'), FALSE);        
       ?>
       </div>
     </div>
 
     <div id="footer">
       <!-- Page template based on http://matthewjamestaylor.com/blog/ultimate-1-column-full-page-ems.htm -->
-      <p><?php echo($urispace->get_setting('credits_html')); ?></p>
+      <p></p>
     </div>
-<?php
-  if ($urispace->get_setting('google_analytics_code')) {
-?>
-    <script type="text/javascript">var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));</script>
-    <script type="text/javascript">var pageTracker = _gat._getTracker("<?php e($urispace->get_setting('google_analytics_code')); ?>");pageTracker._trackPageview();</script>
-<?php   
-  }
-?>
 
   </body>
 </html>

@@ -3,12 +3,14 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_urispace.class.php
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_abstractresource.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storebackedresourcedescription.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storesearch.class.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storeoai.class.php';
 
 
 class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
   var $_store_uri;
   var $_description_template;
   var $_search_template;
+  var $_base_path = '/';
   var $_ns = array();
   function __construct($store_uri) {
     $this->_store_uri = $store_uri; 
@@ -21,13 +23,22 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
     if ( preg_match('~^(.+)\.(html|rdf|json|turtle)$~', $request->full_path, $m)) {
       $base_path = $m[1];
       $type = $m[2];  
-      if ($base_path == '/~search') {
+      if ($base_path == $this->_base_path. '~search') {
         $query = isset($request->data["query"]) ? $request->data["query"] : '';
         $offset = isset($request->data["offset"]) ? $request->data["offset"] : '0';
         
         $desc = new PAGET_StoreSearch($request_uri, $type, $this->_store_uri, $query, 30, $offset);
         $desc->set_template($this->_search_template);
         return $desc;
+      }
+      else if ($base_path == $this->_base_path. '~browse') {
+        if (! defined('AUTH_USER') && ! defined('AUTH_PWD')) return null;
+        $token = isset($request->data["token"]) ? $request->data["token"] : null;
+        
+        $desc = new PAGET_StoreOAI($request_uri, $type, $this->_store_uri, $token);
+        $desc->set_template($this->_description_template);
+        return $desc;
+      
       }
       else if (count($request->data) == 0) {
         $resource_uri = preg_replace("~\.local/~", "/", substr($request->uri, 0, strlen($request->uri)-strlen($type) - 1));
@@ -65,6 +76,8 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
     return $this->_description_template;
   } 
     
-  
+  function set_base_path($path) {
+    $this->_base_path = $path;  
+  }
 }
 

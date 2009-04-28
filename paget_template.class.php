@@ -15,7 +15,7 @@ class PAGET_Template {
   var $template_filename;
   var $urispace;
   var $request;
-  var $excludes;
+  var $excludes = array();
   function __construct($template_filename, $desc, $urispace, $request) {
     $this->desc = $desc;  
     $this->template_filename = $template_filename;  

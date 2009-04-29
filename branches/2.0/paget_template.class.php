@@ -48,6 +48,12 @@ class PAGET_Template {
   function get_title($resource_uri = null) {
     return $this->desc->get_label($resource_uri, $this);
   }  
+  
+  function get_description($resource_uri = null) {
+    return $this->desc->get_description($resource_uri, $this);
+  }    
+
+
 
   function render($resource_info, $inline = FALSE, $brief = FALSE) {
 

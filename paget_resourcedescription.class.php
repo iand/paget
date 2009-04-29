@@ -150,9 +150,9 @@ class PAGET_ResourceDescription extends SimpleGraph {
     if ($resource_uri == null) {
       $resource_uri = $this->_primary_resource; 
     }
-    $text = $this->get_first_literal($resource_uri,RDFS_COMMENT, '', 'en');
+    $text = $this->get_first_literal($resource_uri,'http://purl.org/dc/terms/description', '', 'en');
     if ( strlen($text) == 0) {
-      $text = $this->get_first_literal($resource_uri,'http://purl.org/dc/terms/description', '', 'en');
+      $text = $this->get_first_literal($resource_uri,RDFS_COMMENT, '', 'en');
     }
     if ( strlen($text) == 0) {
       $text = $this->get_first_literal($resource_uri,'http://purl.org/rss/1.0/description', '', 'en');

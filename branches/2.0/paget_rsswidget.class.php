@@ -53,8 +53,6 @@ class PAGET_RSSWidget extends PAGET_TableDataWidget {
       $result_info  = 'No resources matched <strong>' . htmlspecialchars($query) . '</strong>';    
     }
     else {
-      $start_index = $this->desc->get_first_literal($resource_uri, 'http://a9.com/-/spec/opensearch/1.1/startIndex');
-      $items_per_page = $this->desc->get_first_literal($resource_uri, 'http://a9.com/-/spec/opensearch/1.1/itemsPerPage');
       $end_index = $start_index + $items_per_page;
       if ($end_index > $total_results) {
         $end_index = $total_results;  
@@ -108,7 +106,7 @@ class PAGET_RSSWidget extends PAGET_TableDataWidget {
           $offset = $offset_page * $items_per_page;
           if ( $offset < 0 ) $offset = 0;
           if ( $offset <= $total_results ) {
-            $ret .= ' <a href="' . htmlspecialchars($search_uri) . '?query=' . htmlspecialchars($$query) . '&offset=' . $offset . '">' . $i . '</a>'; 
+            $ret .= ' <a href="' . htmlspecialchars($search_uri) . '?query=' . htmlspecialchars($query) . '&offset=' . $offset . '">' . $i . '</a>'; 
           }
         }
       }
@@ -118,7 +116,7 @@ class PAGET_RSSWidget extends PAGET_TableDataWidget {
         $offset_page = floor( $offset_raw / $items_per_page);
         $offset = $offset_page * $items_per_page;
         if ( $offset <= $total_results ) {
-          $ret .= ' <a href="' . htmlspecialchars($search_uri) . '?query=' . htmlspecialchars($$query) . '&offset=' . $offset . '">Next</a>'; 
+          $ret .= ' <a href="' . htmlspecialchars($search_uri) . '?query=' . htmlspecialchars($query) . '&offset=' . $offset . '">Next</a>'; 
         }
       } 
       $ret .= '</div>';

@@ -28,7 +28,7 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
         $offset = isset($request->data["offset"]) ? $request->data["offset"] : '0';
         
         $desc = new PAGET_StoreSearch($request_uri, $type, $this->_store_uri, $query, 30, $offset);
-        $desc->set_template($this->_search_template);
+        $desc->set_template($this->_description_template);
         return $desc;
       }
       else if ($base_path == $this->_base_path. '~browse') {

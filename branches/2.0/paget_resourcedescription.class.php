@@ -174,7 +174,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
       $response = new PAGET_Response(200, $this->to_json(), array('content-type'=>'application/json') );
     }
     else if ($this->_type == 'turtle') {
-      $response = new PAGET_Response(200, $this->to_turtle(), array('content-type'=>'text/plain') );
+      $response = new PAGET_Response(200, $this->to_turtle(), array('content-type'=>'text/turtle') );
     }
     else if ($this->_type == 'html') {
       $response = new PAGET_Response(200, $this->get_html($urispace, $request), array('content-type'=>'text/html') );

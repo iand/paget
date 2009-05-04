@@ -31,6 +31,7 @@ class PAGET_SimplePropertyLabeller {
                       'http://purl.org/dc/elements/1.1/publisher' => array('singular' => 'publisher', 'plural' => 'publishers', 'inverse' => 'is publisher of'),
                       'http://purl.org/dc/elements/1.1/creator' => array('singular' => 'creator', 'plural' => 'creators', 'inverse' => 'is creator of'),
                       'http://purl.org/dc/terms/isVersionOf' => array('singular' => 'version of', 'plural' => 'version of', 'inverse' => 'version'),
+                      'http://purl.org/dc/terms/hasVersion' => array('singular' => 'version', 'plural' => 'versions', 'inverse' => 'version of'),
                       'http://purl.org/dc/terms/replaces' => array('singular' => 'replaces', 'plural' => 'replaces', 'inverse' => 'replaced by'),
                       'http://purl.org/dc/terms/title' => array('singular' => 'title', 'plural' => 'titles', 'inverse' => 'is the title of'),
                       'http://purl.org/dc/terms/description' => array('singular' => 'description', 'plural' => 'descriptions', 'inverse' => 'is description of'),

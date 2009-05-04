@@ -128,15 +128,6 @@ class PAGET_ResourceDescription extends SimpleGraph {
     if ( strlen($label) == 0) {
       $label = $this->get_first_literal($resource_uri,RDF_VALUE, '', 'en');
     }
-    $subtitle = $this->get_first_literal($resource_uri,'http://open.vocab.org/terms/subtitle', '', 'en');  
-    if ( strlen($subtitle) > 0) {
-      if ( strlen($label) == 0) {
-        $label = $subtitle; 
-      }
-      else {
-        $label .= ': ' . $subtitle;        
-      }
-    } 
     if ( strlen($label) == 0) {
       $label = $resource_uri;
     }  

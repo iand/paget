@@ -89,10 +89,14 @@ class PAGET_SimplePropertyLabeller {
                       'http://rdfs.org/ns/void#uriLookupEndpoint' => array('singular' => 'URI lookup point', 'plural' => 'URI lookup points', 'inverse' => 'is URI lookup point of'),
                       'http://rdfs.org/ns/void#dataDump' => array('singular' => 'data dump', 'plural' => 'data dumps', 'inverse' => 'is data dump of'),
                       'http://rdfs.org/ns/void#vocabulary' => array('singular' => 'vocabulary used', 'plural' => 'vocabularies used', 'inverse' => 'is vocabulary used in'),
+                      'http://open.vocab.org/terms/numberOfPages' => array('singular' => 'number of pages', 'plural' => 'numbers of pages', 'inverse' => 'is number of pages of'),
                       'http://open.vocab.org/terms/subtitle' => array('singular' => 'sub-title', 'plural' => 'sub-titles', 'inverse' => 'is sub-title of'),
                       'http://purl.org/ontology/bibo/issn' => array('singular' => 'ISSN', 'plural' => 'ISSNs', 'inverse' => 'is ISSN of'),
                       'http://purl.org/ontology/bibo/eissn' => array('singular' => 'EISSN', 'plural' => 'EISSNs', 'inverse' => 'is EISSN of'),
                       'http://purl.org/ontology/bibo/isbn' => array('singular' => 'ISBN', 'plural' => 'ISBNs', 'inverse' => 'is ISBN of'),
+                      'http://purl.org/ontology/bibo/lccn' => array('singular' => 'LCCN', 'plural' => 'LCCNs', 'inverse' => 'is LCCN of'),
+                      'http://purl.org/ontology/bibo/contributorList' => array('singular' => 'list of contributors', 'plural' => 'lists of contributors', 'inverse' => 'is list of contributors to'),
+                      'http://purl.org/ontology/bibo/authorList' => array('singular' => 'list of authors', 'plural' => 'lists of authors', 'inverse' => 'is list of authors of'),
 
 
                 );          

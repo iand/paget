@@ -117,6 +117,9 @@ class PAGET_ResourceDescription extends SimpleGraph {
       $label = $this->get_first_literal($resource_uri,RDFS_LABEL, '', 'en');
     }
     if ( strlen($label) == 0) {
+      $label = $this->get_first_literal($resource_uri,'http://purl.org/dc/terms/title', '', 'en');
+    }
+    if ( strlen($label) == 0) {
       $label = $this->get_first_literal($resource_uri,DC_TITLE, '', 'en');
     }
     if ( strlen($label) == 0) {

@@ -61,6 +61,7 @@ class PAGET_UriSpace {
         return $uri;
       }
     }
+    return $uri;
   }
 
 }

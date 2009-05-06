@@ -30,27 +30,51 @@ class PAGET_SimplePropertyLabeller {
                       'http://purl.org/dc/elements/1.1/subject' => array('singular' => 'subject', 'plural' => 'subjects', 'inverse' => 'is subject for'),
                       'http://purl.org/dc/elements/1.1/publisher' => array('singular' => 'publisher', 'plural' => 'publishers', 'inverse' => 'is publisher of'),
                       'http://purl.org/dc/elements/1.1/creator' => array('singular' => 'creator', 'plural' => 'creators', 'inverse' => 'is creator of'),
-                      'http://purl.org/dc/terms/isVersionOf' => array('singular' => 'version of', 'plural' => 'version of', 'inverse' => 'version'),
-                      'http://purl.org/dc/terms/hasVersion' => array('singular' => 'version', 'plural' => 'versions', 'inverse' => 'version of'),
-                      'http://purl.org/dc/terms/replaces' => array('singular' => 'replaces', 'plural' => 'replaces', 'inverse' => 'replaced by'),
-                      'http://purl.org/dc/terms/title' => array('singular' => 'title', 'plural' => 'titles', 'inverse' => 'is the title of'),
-                      'http://purl.org/dc/terms/description' => array('singular' => 'description', 'plural' => 'descriptions', 'inverse' => 'is description of'),
-                      'http://purl.org/dc/terms/date' => array('singular' => 'date', 'plural' => 'dates', 'inverse' => 'is date of'),
-                      'http://purl.org/dc/terms/identifier' => array('singular' => 'identifier', 'plural' => 'identifiers', 'inverse' => 'is identifier of'),
-                      'http://purl.org/dc/terms/type' => array('singular' => 'document type', 'plural' => 'document types', 'inverse' => 'is document type of'),
+
+                      'http://purl.org/dc/terms/abstract' => array('singular' => 'abstract', 'plural' => 'abstracts', 'inverse' => 'is abstract of'),
+                      'http://purl.org/dc/terms/accessRights' => array('singular' => 'access rights', 'plural' => 'access rights', 'inverse' => 'are access rights for'),
+                      'http://purl.org/dc/terms/alternative' => array('singular' => 'alternative title', 'plural' => 'alternative titles', 'inverse' => 'is alternative title for'),
+                      'http://purl.org/dc/terms/audience' => array('singular' => 'audience', 'plural' => 'audiences', 'inverse' => 'is audience for'),
+                      'http://purl.org/dc/terms/available' => array('singular' => 'date available', 'plural' => 'dates available', 'inverse' => 'is date available of'),
+                      'http://purl.org/dc/terms/bibliographicCitation' => array('singular' => 'bibliographic citation', 'plural' => 'bibliographic citations', 'inverse' => 'is bibliographic citation of'),
                       'http://purl.org/dc/terms/contributor' => array('singular' => 'contributor', 'plural' => 'contributors', 'inverse' => 'is contributor to'),
+                      'http://purl.org/dc/terms/coverage' => array('singular' => 'coverage', 'plural' => 'coverage', 'inverse' => 'is coverage of'),
+                      'http://purl.org/dc/terms/creator' => array('singular' => 'creator', 'plural' => 'creators', 'inverse' => 'is creator of'),
+                      'http://purl.org/dc/terms/date' => array('singular' => 'date', 'plural' => 'dates', 'inverse' => 'is date of'),
+                      'http://purl.org/dc/terms/dateAccepted' => array('singular' => 'date accepted', 'plural' => 'dates accepted', 'inverse' => 'is date accepted of'),
+                      'http://purl.org/dc/terms/dateCopyrighted' => array('singular' => 'date copyrighted', 'plural' => 'dates copyrighted', 'inverse' => 'is date copyrighted of'),
+                      'http://purl.org/dc/terms/dateSubmitted' => array('singular' => 'date submitted', 'plural' => 'dates submitted', 'inverse' => 'is date submitted of'),
+                      'http://purl.org/dc/terms/description' => array('singular' => 'description', 'plural' => 'descriptions', 'inverse' => 'is description of'),
+                      'http://purl.org/dc/terms/format' => array('singular' => 'format', 'plural' => 'formats', 'inverse' => 'is format of'),
+                      'http://purl.org/dc/terms/hasPart' => array('singular' => 'has part', 'plural' => 'has parts', 'inverse' => 'is part of'),
+                      'http://purl.org/dc/terms/hasVersion' => array('singular' => 'version', 'plural' => 'versions', 'inverse' => 'version of'),
+                      'http://purl.org/dc/terms/identifier' => array('singular' => 'identifier', 'plural' => 'identifiers', 'inverse' => 'is identifier of'),
+                      'http://purl.org/dc/terms/isPartOf' => array('singular' => 'part of', 'plural' => 'part of', 'inverse' => 'part'),
+                      'http://purl.org/dc/terms/isReferencedBy' => array('singular' => 'is referenced by', 'plural' => 'is referenced by', 'inverse' => 'references'),
+                      'http://purl.org/dc/terms/isReplacedBy' => array('singular' => 'is replaced by', 'plural' => 'is replaced by', 'inverse' => 'replaces'),
+                      'http://purl.org/dc/terms/isRequiredBy' => array('singular' => 'is required by', 'plural' => 'is required by', 'inverse' => 'requires'),
+                      'http://purl.org/dc/terms/issued' => array('singular' => 'date issued', 'plural' => 'dates issued', 'inverse' => 'is date issued of'),
+                      'http://purl.org/dc/terms/isVersionOf' => array('singular' => 'version of', 'plural' => 'version of', 'inverse' => 'version'),
+                      'http://purl.org/dc/terms/language' => array('singular' => 'language', 'plural' => 'languages', 'inverse' => 'is language of'),
+                      'http://purl.org/dc/terms/license' => array('singular' => 'license', 'plural' => 'licenses', 'inverse' => 'is license of'),
+                      'http://purl.org/dc/terms/medium' => array('singular' => 'medium', 'plural' => 'media', 'inverse' => 'is medium of'),
+                      'http://purl.org/dc/terms/provenance' => array('singular' => 'provenance', 'plural' => 'provenances', 'inverse' => 'is provenance of'),
+                      'http://purl.org/dc/terms/publisher' => array('singular' => 'publisher', 'plural' => 'publishers', 'inverse' => 'is publisher of'),
+                      'http://purl.org/dc/terms/replaces' => array('singular' => 'replaces', 'plural' => 'replaces', 'inverse' => 'replaced by'),
+                      'http://purl.org/dc/terms/references' => array('singular' => 'references', 'plural' => 'references', 'inverse' => 'is referenced by'),
+                      'http://purl.org/dc/terms/relation' => array('singular' => 'relation', 'plural' => 'relations', 'inverse' => 'relation'),
+                      'http://purl.org/dc/terms/replaces' => array('singular' => 'replaces', 'plural' => 'replaces', 'inverse' => 'is replaced by'),
+                      'http://purl.org/dc/terms/requires' => array('singular' => 'requires', 'plural' => 'requires', 'inverse' => 'is required by'),
                       'http://purl.org/dc/terms/rights' => array('singular' => 'rights statement', 'plural' => 'right statements', 'inverse' => 'is rights statement for'),
-                      'http://purl.org/dc/terms/issued' => array('singular' => 'issued', 'plural' => 'issued', 'inverse' => 'is issued of'),
-                      'http://purl.org/dc/terms/updated' => array('singular' => 'updated', 'plural' => 'updated', 'inverse' => 'is updated of'),
+                      'http://purl.org/dc/terms/rightsHolder' => array('singular' => 'rights holder', 'plural' => 'rights holders', 'inverse' => 'is rights holder of'),
                       'http://purl.org/dc/terms/source' => array('singular' => 'source', 'plural' => 'sources', 'inverse' => 'is source of'),
                       'http://purl.org/dc/terms/subject' => array('singular' => 'subject', 'plural' => 'subjects', 'inverse' => 'is subject of'),
-                      'http://purl.org/dc/terms/language' => array('singular' => 'language', 'plural' => 'languages', 'inverse' => 'is language of'),
-                      'http://purl.org/dc/terms/publisher' => array('singular' => 'publisher', 'plural' => 'publishers', 'inverse' => 'is publisher of'),
-                      'http://purl.org/dc/terms/creator' => array('singular' => 'creator', 'plural' => 'creators', 'inverse' => 'is creator of'),
-                      'http://purl.org/dc/terms/isPartOf' => array('singular' => 'part of', 'plural' => 'part of', 'inverse' => 'part'),
                       'http://purl.org/dc/terms/tableOfContents' => array('singular' => 'table of contents', 'plural' => 'tables of contents', 'inverse' => 'is table of contents of'),
-                      'http://purl.org/dc/terms/medium' => array('singular' => 'medium', 'plural' => 'media', 'inverse' => 'is medium of'),
-                      'http://purl.org/dc/terms/license' => array('singular' => 'license', 'plural' => 'licenses', 'inverse' => 'is license of'),
+                      'http://purl.org/dc/terms/title' => array('singular' => 'title', 'plural' => 'titles', 'inverse' => 'is the title of'),
+                      'http://purl.org/dc/terms/type' => array('singular' => 'document type', 'plural' => 'document types', 'inverse' => 'is document type of'),
+                      'http://purl.org/dc/terms/updated' => array('singular' => 'date updated', 'plural' => 'dates updated', 'inverse' => 'is date updated of'),
+                      'http://purl.org/dc/terms/valid' => array('singular' => 'date valid', 'plural' => 'dates valid', 'inverse' => 'is date valid of'),
+
                       'http://www.w3.org/2003/01/geo/wgs84_pos#lat' => array('singular' => 'latitude', 'plural' => 'latitudes', 'inverse' => 'is latitude of'),
                       'http://www.w3.org/2003/01/geo/wgs84_pos#long' => array('singular' => 'longitude', 'plural' => 'longitudes', 'inverse' => 'is longitude of'),
                       'http://www.w3.org/2002/07/owl#sameAs' => array('singular' => 'same as', 'plural' => 'same as', 'inverse' => 'same as'),
@@ -118,10 +142,10 @@ class PAGET_SimplePropertyLabeller {
             if ( ! $desc->subject_has_property($p, RDFS_LABEL) ) {
               $desc->add_literal_triple($p, RDFS_LABEL, $this->_labels[$p]['singular']);
             }
-            if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#plural') ) {
+            if ( array_key_exists('plural',$this->_labels[$p]) &&  ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#plural') ) {
               $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#plural', $this->_labels[$p]['plural']);
             }
-            if ( ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular') ) {
+            if ( array_key_exists('inverse',$this->_labels[$p]) && ! $desc->subject_has_property($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular') ) {
               $desc->add_literal_triple($p, 'http://purl.org/net/vocab/2004/03/label#inverseSingular', $this->_labels[$p]['inverse']);
             }
             $labelled_properties[$p] = 1;

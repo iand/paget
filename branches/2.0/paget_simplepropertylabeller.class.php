@@ -58,6 +58,7 @@ class PAGET_SimplePropertyLabeller {
                       'http://purl.org/dc/terms/language' => array('singular' => 'language', 'plural' => 'languages', 'inverse' => 'is language of'),
                       'http://purl.org/dc/terms/license' => array('singular' => 'license', 'plural' => 'licenses', 'inverse' => 'is license of'),
                       'http://purl.org/dc/terms/medium' => array('singular' => 'medium', 'plural' => 'media', 'inverse' => 'is medium of'),
+                      'http://purl.org/dc/terms/modified' => array('singular' => 'date modified', 'plural' => 'dates modified', 'inverse' => 'is date modified of'),
                       'http://purl.org/dc/terms/provenance' => array('singular' => 'provenance', 'plural' => 'provenances', 'inverse' => 'is provenance of'),
                       'http://purl.org/dc/terms/publisher' => array('singular' => 'publisher', 'plural' => 'publishers', 'inverse' => 'is publisher of'),
                       'http://purl.org/dc/terms/replaces' => array('singular' => 'replaces', 'plural' => 'replaces', 'inverse' => 'replaced by'),

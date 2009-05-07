@@ -67,9 +67,34 @@ class PAGET_Widget {
   }
 
   function render_literal($resource_info, $inline = FALSE, $brief = FALSE) {
-    $html = '<div class="lit">' . htmlspecialchars($resource_info['value']);
+    $html = '<div class="lit">';
+    
+    $value = $resource_info['value'];
+    $encode_value = TRUE;
+    if (isset($resource_info['datatype'])) {
+      if ($resource_info['datatype'] == 'http://www.w3.org/2001/XMLSchema#date') {
+        $datetime = strtotime($resource_info['value']);
+        if ($datetime !== FALSE) {
+          $value = date("j F Y", $datetime);
+        }
+      }
+      else if ($resource_info['datatype'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral') {
+        $encode_value = FALSE;
+      }
+    }
+
+    if ($encode_value) {
+      $html .= htmlspecialchars($value);
+    }
+    else {
+      $html .= $value;
+    }
+
     if (isset($resource_info['lang'])) {
       $html .= ' <span class="lang">[' . htmlspecialchars($resource_info['lang']) . ']</span>';
+    }
+    if (isset($resource_info['datatype'])) {
+      $html .= ' <span class="dt">[' . $this->link_uri($resource_info['datatype']) . ']</span>';
     }
     $html .= '</div>';
     return $html;

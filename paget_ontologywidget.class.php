@@ -30,8 +30,8 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       }
     }    
 
-    if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/elements/1.1/rights') ) {
-      $ret .= '<p>' . htmlspecialchars($this->desc->get_first_literal($resource_uri, 'http://purl.org/dc/elements/1.1/rights')) . '</p>' . "\n";
+    if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/elements/1.1/rights') || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/rights') ) {
+      $ret .= '<p>' . htmlspecialchars($this->desc->get_first_literal($resource_uri, array('http://purl.org/dc/elements/1.1/rights', 'http://purl.org/dc/terms/rights'))) . '</p>' . "\n";
     }
 
     if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {

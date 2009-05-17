@@ -103,7 +103,7 @@ class PAGET_TermWidget extends PAGET_Widget {
   
   
   
-  function get_description($resource_uri) {
+  function get_description($resource_uri, $brief = FALSE) {
     $definition = '';
     $status = '';
     $intro = '';
@@ -142,20 +142,21 @@ class PAGET_TermWidget extends PAGET_Widget {
       $info .= '. ';
     }
 
-    $comments = $this->desc->get_literal_triple_values($resource_uri, RDFS_COMMENT);  
-    foreach ($comments as $comment) {
-      $info .= ' ' . $comment;        
-    }
+    if ($brief == FALSE || strlen($info) == 0) {
+      $comments = $this->desc->get_literal_triple_values($resource_uri, RDFS_COMMENT);  
+      foreach ($comments as $comment) {
+        $info .= ' ' . $comment;        
+      }
 
-    if (strlen($status) > 0) {
-      if (strlen($info) > 0 ) {
-        $info .= 'It ' . $status;
-      }
-      else  {
-        $info = 'This term ' . $status;
-      }
+      if (strlen($status) > 0) {
+        if (strlen($info) > 0 ) {
+          $info .= 'It ' . $status;
+        }
+        else  {
+          $info = 'This term ' . $status;
+        }
+      }    
     }    
-    
     return $info;
     
   }

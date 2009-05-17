@@ -3,6 +3,7 @@
 class PAGET_Widget {
   var $ignore_properties = array();
   var $desc;
+  var $template;
   var $inverse_index;
   var $urispace;
   var $prefixes = array (
@@ -105,7 +106,13 @@ class PAGET_Widget {
   } 
 
   function link_uri($uri, $label = '', $use_definite_article = false) {
-    if (preg_match('/^https?:\/\//', $uri) ) {
+    if (preg_match('/^_:/', $uri) ) {
+      if ($label == '') {
+        $label = $this->make_labelled_uri($uri);
+      }
+      return $label;
+    }
+    else if (preg_match('/^https?:\/\//', $uri) ) {
       $ret = '';
       if ($label == '') {
         $label = $this->make_labelled_uri($uri);
@@ -113,7 +120,7 @@ class PAGET_Widget {
       
       if ( $use_definite_article ) {
         $ret .= 'a';        
-        if ( preg_match('/^[aeiou]/', $label) ) {
+        if ( preg_match('/^(<[^>]+>)?[aeiou]/', $label) ) {
           $ret .= 'n';        
         }
         $ret .= ' ';
@@ -171,9 +178,11 @@ class PAGET_Widget {
         }
       }
       if ($property_values[$i]['type'] == 'uri') {
-        
         $formatted_value .= $this->link_uri($property_values[$i]['value']);
         }
+      else if ($property_values[$i]['type'] == 'bnode') {
+        $formatted_value .= htmlspecialchars($this->get_title($property_values[$i]['value'])); 
+      }
       else {
         $formatted_value .= htmlspecialchars($property_values[$i]['value']); 
       }
@@ -236,7 +245,7 @@ class PAGET_Widget {
         
         foreach ($property_values as $property_value) {
           if ($property_value['type'] == 'uri') {
-            $ret .= '<div style="float:right;"><a href="' . htmlspecialchars($property_value['value'] ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
+            $ret .= '<div style="float:right;"><a href="' . htmlspecialchars($this->urispace->rewrite_uri($property_value['value']) ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
           }
         }       
       }

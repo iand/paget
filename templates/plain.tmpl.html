@@ -12,6 +12,7 @@ xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" >
   <head>
     <title><?php e($title);?></title>
+    <meta name="description" content="<?php e($this->get_description($resource_uri));?>" />
 
 <?php
   $formats = $this->desc->get_resource_triple_values($this->desc->get_uri(), 'http://purl.org/dc/terms/hasFormat');

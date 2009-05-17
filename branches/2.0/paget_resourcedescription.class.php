@@ -9,6 +9,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
   var $_is_valid;
   var $_type;
   var $_template = null;
+  var $_inverse_index = null;
   var $_media_types = array(
                           'rdf' => array('type' => 'application/rdf+xml', 'label' => 'RDF/XML'), 
                           'html' => array('type' => 'text/html',  'label' => 'HTML'),
@@ -44,7 +45,6 @@ class PAGET_ResourceDescription extends SimpleGraph {
     $this->_is_valid = false;
     foreach ($resources as $resource_uri) {
       $this->add_resource_triple( $this->_uri, FOAF_TOPIC, $resource_uri );
-
       $generators = $this->get_generators();
       foreach ($generators as $generator) {
         $generator->add_triples($resource_uri, $this);  
@@ -200,20 +200,22 @@ class PAGET_ResourceDescription extends SimpleGraph {
 
 
   function get_inverse_index() {
-    $g = new SimpleGraph();
-    
-    foreach ($this->_index as $s => $p_list) {
-      foreach ($p_list as $p => $v_list) {
-        foreach ($v_list as $v_info) {
-          if ( $v_info['type'] == 'uri' ) {
-            $g->add_resource_triple($v_info['value'], $p, $s);
-          } 
+    if ($this->_inverse_index == null) {
+      $g = new SimpleGraph();
+      
+      foreach ($this->_index as $s => $p_list) {
+        foreach ($p_list as $p => $v_list) {
+          foreach ($v_list as $v_info) {
+            if ( $v_info['type'] == 'uri' ) {
+              $g->add_resource_triple($v_info['value'], $p, $s);
+            } 
+          }
         }
       }
+      
+      $this->_inverse_index = $g->get_index();
     }
-    
-    return $g->get_index();
-    
+    return $this->_inverse_index;
   }
   
   function consume_first_literal($s, $p, $def = '') {

@@ -5,18 +5,31 @@ require_once MORIARTY_DIR . "httprequest.class.php";
 class PAGET_OntologyWidget extends PAGET_Widget {
   
   
-  function render($resource_info, $inline = FALSE, $brief = FALSE) {
+  function render($resource_info, $inline = FALSE, $brief = FALSE, $level = 1) {
     if ($brief) return $this->render_brief($resource_info, $inline);
+    $resource_uri = $resource_info['value'];
+    $ret = '';
+    
     $inline = array();
     
     $index = $this->desc->get_index();
     
+    $people_info = array();
+    $people_info[] = $this->render_dl_item($index, $resource_uri, array(DC_CREATOR, 'http://purl.org/dc/terms/creator', 'http://xmlns.com/foaf/0.1/maker'), 'Creator', 'Creators');
+    $people_info[] = $this->render_dl_item($index, $resource_uri, array('http://purl.org/dc/elements/1.1/contributor', 'http://purl.org/dc/terms/contributor'), 'Contributor', 'Contributors');
+    if (count($people_info) > 0) {
+      $ret .= '<dl class="doc-info">' . join('', $people_info) . '</dl>';
+    }
+
+
     $descriptions = $this->desc->get_literal_triple_values($resource_uri, array(DC_DESCRIPTION, RDFS_COMMENT));
     if (count($descriptions) > 0) {
       foreach ($descriptions as $description) {
-        echo '<p>' . htmlspecialchars($description) . '</p>';
+        $ret .=  '<p>' . htmlspecialchars($description) . '</p>';
       }
     }    
+    
+    
     
     $key_properties = array('http://purl.org/vocab/vann/preferredNamespaceUri',
                                                           'http://purl.org/vocab/vann/preferredNamespacePrefix',
@@ -24,7 +37,17 @@ class PAGET_OntologyWidget extends PAGET_Widget {
                                                           'http://purl.org/dc/elements/1.1/rights',
                                                         );
     
-    $this->emit_property_value_list($resource_uri,$key_properties);
+    $ret .= $this->emit_property_value_list($resource_uri,$key_properties);
+
+    if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
+      $history_widget = new PAGET_HistoryWidget($this->desc, $this->template, $this->urispace);
+      $history .= $history_widget->render($resource_info, FALSE, FALSE, $level + 1);
+      if (strlen($history) > 0) {
+        $ret .=  '<h' . ($level + 1) . '>History</h' . ($level + 1) . '>'. $history;
+      }
+    }    
+
+
 
     $inverse_index = $this->desc->get_inverse_index();
     $def_uri = '';
@@ -34,65 +57,82 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     else if (array_key_exists($resource_uri . '/', $inverse_index) && array_key_exists(RDFS_ISDEFINEDBY, $inverse_index[$resource_uri . '/'])) {
       $def_uri =  $resource_uri . '/';
     }
+    else if (array_key_exists($resource_uri . '#', $inverse_index) && array_key_exists(RDFS_ISDEFINEDBY, $inverse_index[$resource_uri . '#'])) {
+      $def_uri =  $resource_uri . '#';
+    }
     
     if (strlen($def_uri) > 0) {
-      
+
       $terms = $inverse_index[$def_uri][RDFS_ISDEFINEDBY];
       if  (count($terms) > 0) {
-        $tw = new PAGET_TermWidget($this->desc);
-        $rows = array();
+        $tw = new PAGET_TermWidget($this->desc, $this->template, $this->urispace);
+        $tw->ignore_properties(array(RDFS_ISDEFINEDBY, RDFS_SEEALSO));
+        $term_list = array();
         foreach ($terms as $v_info) {
           if ( $v_info['type'] == 'uri' ) {
-            $term_uri = $v_info['value'];
-            $title = $tw->get_title($term_uri);
-            $row = '<tr><td valign="top"><a href="' . htmlspecialchars($term_uri) . '">' . htmlspecialchars($title) . '</a></td>';
-            $row .= '<td valign="top">' . htmlspecialchars($tw->get_description($term_uri)) . '</td></tr>';
-    
-            $rows[$title] = $row;
+            $term_list[$tw->get_title($v_info['value'])] = $tw->render($v_info, FALSE, FALSE, $level + 2);
           }
         }
-        if (count($rows)  > 0) { 
-          ksort( $rows );
-          echo '<h2>Properties and Classes</h2>';
-          echo '<table>';
-          foreach ($rows as $key => $row) {
-            echo $row . "\n";   
-          }
-          echo '</table>';
+        if (count($term_list)  > 0) { 
+          ksort( $term_list );
+          $ret .=  '<h' . ($level + 1) . '>Properties and Classes</h' . ($level + 1) . '>' . join('', $term_list);
         }
       }
     }
     
-
   
         
     if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/example')) {
-      echo '<h2>Examples</h2>';
-      echo '<ul>';
+      $ret .=  '<h' . ($level + 1) . '>Examples</h' . ($level + 1) . '>';
+      $ret .=  '<ul>';
       foreach ($index[$resource_uri] as $p => $v_list) {
         foreach ($v_list as $v_info) {
           if ( $p == 'http://purl.org/vocab/vann/example' && $v_info['type'] == 'uri') {
             $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example', 'en');
-            echo '<li><a href="' . htmlspecialchars($v_info['value']) . '">' . htmlspecialchars($title) . '</a></li>';
+            $ret .=  '<li>'  . $this->link_uri($v_info['value'], $title) . '</li>';
           }
         }     
       }
-      echo '</ul>';
+      $ret .=  '</ul>';
     }
 
-    if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
-      echo '<h2>History</h2>';
-      $history_widget = new PAGET_HistoryWidget($this->desc);
-      $history_widget->render($resource_uri);
-    }    
-
     
-    echo '<h2>Other Information</h2>';
-    $data_widget = new PAGET_DataWidget($this->desc);
-    $data_widget->ignore_properties(array(DC_TITLE, RDFS_LABEL, DC_DESCRIPTION, RDFS_COMMENT, 'http://purl.org/vocab/vann/example'));
+    $data_widget = new PAGET_TableDataWidget($this->desc, $this->template, $this->urispace);
+    $data_widget->ignore_properties(array(RDF_TYPE, DC_TITLE, RDFS_LABEL, DC_DESCRIPTION, RDFS_COMMENT, 'http://purl.org/vocab/vann/example'));
     $data_widget->ignore_properties($key_properties);
     $data_widget->ignore_properties(array('http://www.w3.org/2004/02/skos/core#changeNote', 'http://www.w3.org/2004/02/skos/core#historyNote', 'http://purl.org/dc/terms/issued'));
-    $data_widget->render($resource_uri);
+    $other = $data_widget->render($resource_info, FALSE, FALSE, $level + 2);
+    if (strlen(trim($other)) > 0) {
+      $ret .=  '<h' . ($level + 1) . '>Other Information</h' . ($level + 1) . '>' . $other;
+    }
 
+
+    return $ret;
+  }
+
+  function render_dl_item(&$index, $resource_uri, $properties, $singular_label, $plural_label) {
+    if (!array_key_exists($resource_uri, $index)) return;
+    $items = array();
+
+    foreach ($properties as $p) {
+      if (array_key_exists($p, $index[$resource_uri])) {
+        foreach ($index[$resource_uri][$p] as $property_info) {
+          $items[] = '<dd>' . $this->template->render($property_info, FALSE, TRUE) . '</dd>';
+        }      
+      }
+    }  
+    
+    if (count($items) > 0) {
+      $ret .= '<dt>';
+      if (count($items) > 1) {
+        $ret .= $plural_label;  
+      }  
+      else {
+        $ret .= $singular_label;  
+      }
+      $ret .= '</dt>' . join('', $items);
+    }    
+    
+    return $ret;
   }
 }

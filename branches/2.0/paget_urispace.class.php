@@ -8,28 +8,35 @@ class PAGET_UriSpace {
   var $_forms = array();
 
   function __construct() {
-
+    
   }
+
 
   function dispatch() {
     $request = new PAGET_Request();
-    $resource = $this->get_resource($request);
-    if ( $resource == null ) {
-      $response = new PAGET_Response(404,'The requested resource ' . $request->full_path . ' was not found on this server', array(), $request);
+
+    if (array_key_exists($request->full_path, $this->_redirects)) {
+      $response = new PAGET_Response(302,'Moved to ' . 'http://' . $_SERVER["SERVER_NAME"] . $this->_redirects[$path], array('Location'=>'http://' . $_SERVER["SERVER_NAME"] . $this->_redirects[$request->full_path]), $request);
     }
-    else {    
-      if ( $this->_has_http_method($resource, $request->method) ) {
-        $response = $resource->{strtolower($request->method)}($this, $request);
+    else {
+      $resource = $this->get_resource($request);
+      if ( $resource == null ) {
+        $response = new PAGET_Response(404,'The requested resource ' . $request->full_path . ' was not found on this server', array(), $request);
       }
-      else {
-        $response = new PAGET_Response(405, 'The requested resource ' . $request->full_path . ' does not support method ' . $request->method, array(), $request);
+      else {    
+        if ( $this->_has_http_method($resource, $request->method) ) {
+          $response = $resource->{strtolower($request->method)}($this, $request);
+        }
+        else {
+          $response = new PAGET_Response(405, 'The requested resource ' . $request->full_path . ' does not support method ' . $request->method, array(), $request);
+        }
       }
-    }
-    
-    if (!$response || !method_exists($response, 'emit') ) {
-      $response = new PAGET_Response(500, 'An internal error occurred', array(), $request);
-    }
-  
+      
+      if (!$response || !method_exists($response, 'emit') ) {
+        $response = new PAGET_Response(500, 'An internal error occurred', array(), $request);
+      }
+
+    }  
     $response->configure($resource, $request);
     $response->emit();  
   }
@@ -62,6 +69,14 @@ class PAGET_UriSpace {
       }
     }
     return $uri;
+  }
+
+  function get_template($request) {
+    return null;
+  } 
+
+  function add_redirect($from_path, $to_path) {
+    $this->_redirects[$from_path] = $to_path;     
   }
 
 }

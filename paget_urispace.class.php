@@ -59,17 +59,22 @@ class PAGET_UriSpace {
     return FALSE;
   }
 
-  function rewrite_uri($uri) {
-    if (preg_match('~http://([^/]+)/~i', $uri, $m)) {
+  function resource_uri_to_request_uri($resource_uri) {
+    if (preg_match('~http://([^/]+)/~i', $resource_uri, $m)) {
       if ( $_SERVER["HTTP_HOST"] == $m[1] . '.local' ) {
-        return str_replace($m[1], $_SERVER["HTTP_HOST"], $uri);
+        return str_replace($m[1], $_SERVER["HTTP_HOST"], $resource_uri);
       }
       else {
-        return $uri;
+        return $resource_uri;
       }
     }
-    return $uri;
+    return $resource_uri;    
   }
+
+  function request_uri_to_resource_uri($request_uri) {
+    return $request_uri;    
+  }
+
 
   function get_template($request) {
     return null;

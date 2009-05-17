@@ -56,7 +56,6 @@ class PAGET_Template {
 
 
   function render($resource_info, $inline = FALSE, $brief = FALSE) {
-
     if ($resource_info['type'] == 'bnode' || $resource_info['type'] == 'uri') {
       $resource_uri = $resource_info['value'];
       if ( $this->desc->has_resource_triple($resource_uri, RDF_TYPE, RDF_PROPERTY) || $this->desc->has_resource_triple($resource_uri, RDF_TYPE, RDFS_CLASS) ) {

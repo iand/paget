@@ -6,6 +6,8 @@ class PAGET_OntologyWidget extends PAGET_Widget {
   
   
   function render($resource_info, $inline = FALSE, $brief = FALSE, $level = 1) {
+    
+    
     if ($brief) return $this->render_brief($resource_info, $inline);
     $resource_uri = $resource_info['value'];
     $ret = '';

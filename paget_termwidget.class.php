@@ -138,25 +138,27 @@ class PAGET_TermWidget extends PAGET_Widget {
         $info .= $this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition', '');       
       }
     }
-    if ($info && substr($info, -1) != '.') {
-      $info .= '. ';
-    }
+    $info .= $this->add_period_if_needed($info);
 
     if ($brief == FALSE || strlen($info) == 0) {
       $comments = $this->desc->get_literal_triple_values($resource_uri, RDFS_COMMENT);  
       foreach ($comments as $comment) {
         $info .= ' ' . $comment;        
+        $info .= $this->add_period_if_needed($info);
       }
 
       if (strlen($status) > 0) {
-        if (strlen($info) > 0 && substr(trim($info), -1) != '.') {
-          $info .= '. ';
-        }
+        $info .= $this->add_period_if_needed($info);
         $info .= 'This term ' . $status;
       }    
     }    
     return $info;
     
+  }
+
+  function add_period_if_needed($text) {
+    if (strlen($text) ==0 || preg_match('~\.\s*$~', $text) ) return '';
+    return '. ';
   }
 
 

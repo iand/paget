@@ -123,10 +123,10 @@ class PAGET_TermWidget extends PAGET_Widget {
         $status = 'is deemed to be semantically unstable and is subject to its meaning being changed.'; 
       }
       else if ( $status_code == 'stable') {
-        $status = 'is deemed to be semantically stable. Its meaning should not change in the foreseable future.'; 
+        $status = 'is deemed to be semantically stable and its meaning should not change in the foreseable future.'; 
       }
       else if ( $status_code == 'testing') {
-        $status = 'is undergoing testing to determine if it is semantically stable. Its meaning may change in the foreseable future.';  
+        $status = 'is undergoing testing to determine if it is semantically stable and its meaning may change in the foreseable future.';  
       }
     }
     
@@ -149,12 +149,10 @@ class PAGET_TermWidget extends PAGET_Widget {
       }
 
       if (strlen($status) > 0) {
-        if (strlen($info) > 0 ) {
-          $info .= 'It ' . $status;
+        if (strlen($info) > 0 && substr(trim($info), -1) != '.') {
+          $info .= '. ';
         }
-        else  {
-          $info = 'This term ' . $status;
-        }
+        $info .= 'This term ' . $status;
       }    
     }    
     return $info;

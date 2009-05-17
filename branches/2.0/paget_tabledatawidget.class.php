@@ -99,7 +99,7 @@ class PAGET_TableDataWidget extends PAGET_Widget {
     for ($i = 0; $i < count($property_values); $i++) {
       if ($property_values[$i]['type'] == 'uri') {
         if ( in_array($property, $this->image_properties)) {
-          $values[] = '<a href="' . htmlspecialchars($this->urispace->rewrite_uri($property_values[$i]['value']) ) . '"><img src="' . htmlspecialchars($property_values[$i]['value'] ) . '" /></a>';
+          $values[] = '<a href="' . htmlspecialchars($this->urispace->resource_uri_to_request_uri($property_values[$i]['value']) ) . '"><img src="' . htmlspecialchars($property_values[$i]['value'] ) . '" /></a>';
         }
         else  {
           $values[] = $this->template->render($property_values[$i], FALSE, TRUE);

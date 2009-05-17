@@ -126,7 +126,7 @@ class PAGET_Widget {
         $ret .= ' ';
       }   
 
-      $ret .= '<a href="' . htmlspecialchars($this->urispace->rewrite_uri($uri)) . '" class="uri">';
+      $ret .= '<a href="' . htmlspecialchars($this->urispace->resource_uri_to_request_uri($uri)) . '" class="uri">';
       $ret .= $label . '</a>';
       return $ret;
     }
@@ -245,7 +245,7 @@ class PAGET_Widget {
         
         foreach ($property_values as $property_value) {
           if ($property_value['type'] == 'uri') {
-            $ret .= '<div style="float:right;"><a href="' . htmlspecialchars($this->urispace->rewrite_uri($property_value['value']) ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
+            $ret .= '<div style="float:right;"><a href="' . htmlspecialchars($this->urispace->resource_uri_to_request_uri($property_value['value']) ) . '"><img src="' . htmlspecialchars($property_value['value'] ) . '" /></a></div>' . "\n";
           }
         }       
       }

@@ -70,11 +70,12 @@ class PAGET_OntologyWidget extends PAGET_Widget {
             $term_uri = $v_info['value'];
             $term_label = $tw->get_title($term_uri);
             $term_desc = $tw->get_description($term_uri, TRUE);
-            
-            $term_list[$term_label] = array( 'html' => $tw->render($v_info, FALSE, FALSE, $level + 2),
+            $term_id = $this->localname($term_uri);
+            $term_list[$term_label] = array( 'html' => $tw->render($v_info, TRUE, FALSE, $level + 2),
                                                                   'uri' => $term_uri ,
                                                                   'label' => $term_label,
                                                                   'desc' => $term_desc,
+                                                                  'id'=>$term_id,
                                                                 );
           }
         }    
@@ -100,9 +101,16 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     
     if (count($term_list) > 2) {
       $ret .=  '<h' . ($level + 1) . ' id="sec-summary">Term Summary</h' . ($level + 1) . '>' . "\n";
-      $ret .= '<table><tr><th>URI</th><th>Definition</th></tr>' . "\n";
+      $ret .= '<table><tr><th>Term</th><th>URI</th></tr>' . "\n";
       foreach ($term_list as $term_info) {
-        $ret .= '<tr><td nowrap="nowrap">' . htmlspecialchars($term_info['uri']) .'</td><td>' . htmlspecialchars($term_info['desc']) .'</td></tr>'. "\n";
+        $ret .= '<tr><td>';
+        if ($term_info['id'] != null) {
+           $ret .= '<a href="#' . htmlspecialchars($term_info['id']) . '">' . htmlspecialchars($term_info['label']) . '</a>';
+        }
+        else {
+          $ret .= htmlspecialchars($term_info['label']);
+        }
+        $ret .= '</td><td nowrap="nowrap">' . htmlspecialchars($term_info['uri']) .'</td></tr>'. "\n";
       }
       $ret .= '</table>' . "\n";
     }
@@ -112,6 +120,11 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     if (count($term_list)  > 0) { 
       $ret .=  '<h' . ($level + 1) . ' id="sec-terms">Properties and Classes</h' . ($level + 1) . '>' . "\n";
       foreach ($term_list as $term_info) {
+        $term_id_fragment = '';
+        if ($term_info['id'] != null) {
+          $term_id_fragment = ' id="' . htmlspecialchars($term_info['id']) . '"';
+        }
+        $ret .= '<h' . ($level + 2)  . $term_id_fragment . '>' .htmlspecialchars( $term_info['label']) . '</h' . ($level + 2)  . '>';
         $ret .=  $term_info['html'] . "\n"; 
       }
     }
@@ -173,4 +186,13 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     
     return $ret;
   }
+
+  function localname($uri) {
+    if (preg_match('~^(.*[\/\#])([a-z0-9\-\_]+)$~i', $uri, $m)) {
+      return $m[2];
+    }
+    return null;    
+  }
+
+
 }

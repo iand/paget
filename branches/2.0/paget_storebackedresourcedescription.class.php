@@ -1,7 +1,6 @@
 <?php
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_resourcedescription.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_simplepropertylabeller.class.php';
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_simpleclasslabeller.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storedescribegenerator.class.php';
 
 class PAGET_StoreBackedResourceDescription extends PAGET_ResourceDescription {   

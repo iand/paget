@@ -84,6 +84,7 @@ xml version="1.0" encoding="utf-8"?>
   </div>
     <div class="colmask fullpage">
       <div class="col1">
+      <p>This resource has a URI of <a href="<?php e($resource_uri);?>"><?php e($resource_uri);?></a></p>
       <?php
         echo $this->render(array('value' => $resource_uri, 'type'=>'uri'), FALSE);        
       ?>

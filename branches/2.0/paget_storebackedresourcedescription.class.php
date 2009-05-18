@@ -14,7 +14,7 @@ class PAGET_StoreBackedResourceDescription extends PAGET_ResourceDescription {
 
   function get_augmentors() {
     if ($this->_type == 'html') {
-      return  array( new PAGET_SimplePropertyLabeller(), new PAGET_SimpleClassLabeller()  );
+      return  array( new PAGET_SimplePropertyLabeller()  );
     }
     else {
       return array();

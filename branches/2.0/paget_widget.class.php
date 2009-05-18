@@ -6,45 +6,12 @@ class PAGET_Widget {
   var $template;
   var $inverse_index;
   var $urispace;
-  var $prefixes = array (
-                      'http://www.w3.org/1999/02/22-rdf-syntax-ns#' => 'rdf',
-                      'http://www.w3.org/2000/01/rdf-schema#' => 'rdfs',
-                      'http://www.w3.org/2002/07/owl#' => 'owl',
-                      'http://purl.org/vocab/changeset/schema#' => 'cs',
-                      'http://schemas.talis.com/2006/bigfoot/configuration#' => 'bf',
-                      'http://schemas.talis.com/2006/frame/schema#' => 'frm',
-                      'http://schemapedia.com/terms/' => 'sp',
-
-                      'http://purl.org/dc/elements/1.1/' => 'dc',
-                      'http://purl.org/dc/terms/' => 'dct',
-                      'http://purl.org/dc/dcmitype/' => 'dctype',
-
-                      'http://xmlns.com/foaf/0.1/' => 'foaf',
-                      'http://purl.org/vocab/bio/0.1/' => 'bio',
-                      'http://www.w3.org/2003/01/geo/wgs84_pos#' => 'geo',
-                      'http://purl.org/vocab/relationship/' => 'rel',
-                      'http://purl.org/rss/1.0/' => 'rss',
-                      'http://xmlns.com/wordnet/1.6/' => 'wn',
-                      'http://www.daml.org/2001/10/html/airport-ont#' => 'air',
-                      'http://www.w3.org/2000/10/swap/pim/contact#' => 'contact',
-                      'http://www.w3.org/2002/12/cal/ical#' => 'ical',
-                      'http://purl.org/vocab/frbr/core#' => 'frbr',
-                      'http://www.w3.org/2006/time#' => 'time',
-
-                      'http://schemas.talis.com/2005/address/schema#' => 'ad',
-                      'http://schemas.talis.com/2005/library/schema#' => 'lib',
-                      'http://schemas.talis.com/2005/dir/schema#' => 'dir',
-                      'http://schemas.talis.com/2005/user/schema#' => 'user',
-                      'http://schemas.talis.com/2005/service/schema#' => 'sv',
-                    );
-
   
   function __construct(&$desc, $template, $urispace) {
     $this->desc = $desc;
     $this->template = $template;
     $this->urispace = $urispace;
     $this->inverse_index = $desc->get_inverse_index();
-    $this->prefixes = array_merge($this->prefixes, $desc->get_prefix_mappings());
   }
   
   function get_title($resource_uri) {
@@ -141,9 +108,11 @@ class PAGET_Widget {
     if ($title != $uri) {
       return '<span title="' . htmlspecialchars($uri) . '">'. htmlspecialchars($title) . '</span>';
     }
-    else if (preg_match('/^(.*[\/\#])([a-z0-9\-\_]+)$/i', $uri, $m)) {
-      if ( array_key_exists($m[1], $this->prefixes)) {
-        return '<span title="' . htmlspecialchars($uri) . '"><span class="prefix">' . htmlspecialchars($this->prefixes[$m[1]]) . ':</span><span class="localname">' . htmlspecialchars($m[2]) . '</span></span>';
+    else {
+      $qname = $this->desc->uri_to_qname($uri);
+      if ($qname != null) {
+        $m = split(':', $qname);  
+        return '<span title="' . htmlspecialchars($uri) . '"><span class="prefix">' . htmlspecialchars($m[0]) . ':</span><span class="localname">' . htmlspecialchars($m[1]) . '</span></span>';
       }  
     }
     return $uri;

@@ -19,6 +19,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     $people_info = array();
     $people_info[] = $this->render_dl_item($index, $resource_uri, array(DC_CREATOR, 'http://purl.org/dc/terms/creator', 'http://xmlns.com/foaf/0.1/maker'), 'Creator', 'Creators');
     $people_info[] = $this->render_dl_item($index, $resource_uri, array('http://purl.org/dc/elements/1.1/contributor', 'http://purl.org/dc/terms/contributor'), 'Contributor', 'Contributors');
+    $people_info[] = $this->render_dl_item($index, $resource_uri, array('http://purl.org/dc/elements/1.1/source', 'http://purl.org/dc/terms/source'), 'Source', 'Sources');
     if (count($people_info) > 0) {
       $ret .= '<dl class="doc-info">' . join('', $people_info) . '</dl>';
     }

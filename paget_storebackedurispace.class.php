@@ -40,7 +40,7 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
         return $desc;
       
       }
-      else if (count($request->data) == 0) {
+      else {
         $resource_uri = preg_replace("~\.local/~", "/", substr($request->uri, 0, strlen($request->uri)-strlen($type) - 1));
         
         $desc = new PAGET_StoreBackedResourceDescription($request_uri, $resource_uri, $type, $this->_store_uri); 

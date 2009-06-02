@@ -12,9 +12,9 @@ class PAGET_StoreDescribeGenerator {
   
   function add_triples($resource_uri, &$desc) {
     $store = new Store($this->_store_uri);
-    $response = $store->describe($resource_uri, $this->_type);
+    $response = $store->describe($resource_uri, $this->_type, 'json');
     if ($response->is_success()) {
-      $desc->add_rdfxml($response->body);
+      $desc->add_json($response->body);
     }
   }
 

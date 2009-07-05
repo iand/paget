@@ -2,7 +2,7 @@
 require_once "paget_widget.class.php";
 
 class PAGET_TableDataWidget extends PAGET_Widget {
-  var $image_properties =  array( 'http://xmlns.com/foaf/0.1/depiction', 'http://xmlns.com/foaf/0.1/img'); 
+  var $image_properties =  array( 'http://xmlns.com/foaf/0.1/depiction', 'http://xmlns.com/foaf/0.1/img', 'http://xmlns.com/foaf/0.1/logo'); 
   var $property_order =  array('http://www.w3.org/2004/02/skos/core#prefLabel', 
                                 RDFS_LABEL, 
                                 'http://purl.org/dc/terms/title', 

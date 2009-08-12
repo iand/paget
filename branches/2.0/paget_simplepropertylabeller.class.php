@@ -415,6 +415,7 @@ class PAGET_SimplePropertyLabeller {
     $this->add_label('http://purl.org/goodrelations/v1#amountOfThisGood', 'amount of good', 'amounts of good');
     $this->add_label('http://purl.org/goodrelations/v1#typeOfGood', 'type of good', 'types of good', 'is type of good for');
     $this->add_label('http://purl.org/goodrelations/v1#isSimilarTo', 'similar to', 'similar to', 'similar to');
+    $this->add_label('http://purl.org/goodrelations/v1#hasEAN_UCC-13', 'EAN', 'EANs', 'is EAN of');
 
 
   

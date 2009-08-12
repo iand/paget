@@ -106,13 +106,13 @@ class PAGET_Widget {
   function make_labelled_uri($uri) {
     $title = $this->get_title($uri);
     if ($title != $uri) {
-      return '<span title="' . htmlspecialchars($uri) . '">'. htmlspecialchars($title) . '</span>';
+      return htmlspecialchars($title);
     }
     else {
       $qname = $this->desc->uri_to_qname($uri);
       if ($qname != null) {
         $m = split(':', $qname);  
-        return '<span title="' . htmlspecialchars($uri) . '"><span class="prefix">' . htmlspecialchars($m[0]) . ':</span><span class="localname">' . htmlspecialchars($m[1]) . '</span></span>';
+        return '<span class="prefix">' . htmlspecialchars($m[0]) . ':</span><span class="localname">' . htmlspecialchars($m[1]) . '</span>';
       }  
     }
     return $uri;

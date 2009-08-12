@@ -5,7 +5,6 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storebackedresourc
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storesearch.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storeoai.class.php';
 
-
 class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
   var $_store_uri;
   var $_description_template;
@@ -17,7 +16,6 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
   }
 
   function get_resource($request) {
-    
     $request_uri = $request->uri;
     
     if ( preg_match('~^(.+)\.(html|rdf|json|turtle)$~', $request->full_path, $m)) {
@@ -42,7 +40,6 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
       }
       else {
         $resource_uri = preg_replace("~\.local/~", "/", substr($request->uri, 0, strlen($request->uri)-strlen($type) - 1));
-        
         $desc = new PAGET_StoreBackedResourceDescription($request_uri, $resource_uri, $type, $this->_store_uri); 
         $desc->set_template($this->_description_template);
         foreach ($this->_ns as $short_name => $uri) {

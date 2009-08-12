@@ -402,6 +402,7 @@ class PAGET_SimplePropertyLabeller {
     $this->add_label('http://www.gazettes-online.co.uk/ontology/court#courtName', 'court name');
     $this->add_label('http://www.gazettes-online.co.uk/ontology/court#sitsAt', 'sits at', 'sits at');
 
+    $this->add_label('http://purl.org/stuff/rev#text', 'text', 'text');
     $this->add_label('http://purl.org/stuff/rev#hasReview', 'review');
     $this->add_label('http://purl.org/stuff/rev#reviewer', 'reviewer');
     $this->add_label('http://purl.org/stuff/rev#positiveVotes', 'positive votes', 'positive votes');

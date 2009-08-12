@@ -136,16 +136,21 @@ class PAGET_OntologyWidget extends PAGET_Widget {
         
     if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/example')) {
       $ret .=  '<h' . ($level + 1) . ' id="sec-examples">Examples</h' . ($level + 1) . '>';
-      $ret .=  '<ul>';
-      foreach ($index[$resource_uri] as $p => $v_list) {
-        foreach ($v_list as $v_info) {
+      foreach ($index[$resource_uri]['http://purl.org/vocab/vann/example'] as $v_info) {
+        $ret .=  $this->template->render($v_info);      
+        
+/*
           if ( $p == 'http://purl.org/vocab/vann/example' && $v_info['type'] == 'uri') {
             $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example', 'en');
-            $ret .=  '<li>'  . $this->link_uri($v_info['value'], $title) . '</li>';
+            $ret .=  '<iframe src="'  . $this->link_uri($v_info['value'], $title) . '</li>';
           }
-        }     
+          else {
+*/
+//            $ret .=  '<div style="width:100%;"><iframe src="'  . htmlspecialchars($v_info['value']). '"  style="width:100%; border:0px;"></iframe></div>';
+/*  
+          }
+*/
       }
-      $ret .=  '</ul>';
     }
 
     

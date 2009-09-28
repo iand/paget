@@ -2,6 +2,7 @@
 require_once MORIARTY_DIR . 'simplegraph.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_response.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_template.class.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_simplepropertylabeller.class.php';
 
 class PAGET_ResourceDescription extends SimpleGraph {   
   var $_uri;
@@ -21,6 +22,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
     $this->_primary_resource = $resource_uri;
     $this->_type = $type;
     $this->read_triples();
+    parent::__construct();
 
   } 
   
@@ -71,7 +73,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
     if ( preg_match('~^(.+)\.(html|rdf|json|turtle)$~', $parts['path'], $m)) {
       $base_uri = $parts['scheme'] . '://' . $parts['host'] . $m[1];
       $suffix = '';
-      if (strlen($parts['query']) > 0) $suffix = '?' . $parts['query']; 
+      if (array_key_exists('query', $parts) && strlen($parts['query']) > 0) $suffix = '?' . $parts['query']; 
       
       foreach ($this->_media_types as $extension => $type_info) {
         if ( $extension != $this->_type) {

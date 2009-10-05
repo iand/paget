@@ -12,6 +12,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
                           'turtle' => array('type' => 'text/plain', 'label' => 'Turtle'),
                       );  
   function __construct($uri) {
+    parent::__construct();
     $this->_uri = $uri;
 
 
@@ -23,6 +24,7 @@ class PAGET_ResourceDescription extends SimpleGraph {
     }
 
     $this->read_triples();
+    
 
   } 
   

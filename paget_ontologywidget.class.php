@@ -3,19 +3,19 @@ require_once "paget_widget.class.php";
 require_once MORIARTY_DIR . "httprequest.class.php";
 
 class PAGET_OntologyWidget extends PAGET_Widget {
-  
-  
+
+
   function render($resource_info, $inline = FALSE, $brief = FALSE, $level = 1) {
-    
-    
+
+
     if ($brief) return $this->render_brief($resource_info, $inline);
     $resource_uri = $resource_info['value'];
     $ret = '';
-    
+
     $inline = array();
-    
+
     $index = $this->desc->get_index();
-    
+
     $people_info = array();
     $people_info[] = $this->render_dl_item($index, $resource_uri, array(DC_CREATOR, 'http://purl.org/dc/terms/creator', 'http://xmlns.com/foaf/0.1/maker'), 'Creator', 'Creators');
     $people_info[] = $this->render_dl_item($index, $resource_uri, array('http://purl.org/dc/elements/1.1/contributor', 'http://purl.org/dc/terms/contributor'), 'Contributor', 'Contributors');
@@ -29,7 +29,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       foreach ($descriptions as $description) {
         $ret .=  '<p>' . htmlspecialchars($description) . '</p>';
       }
-    }    
+    }
 
     if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/elements/1.1/rights') || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/rights') ) {
       $ret .= '<p>' . htmlspecialchars($this->desc->get_first_literal($resource_uri, array('http://purl.org/dc/elements/1.1/rights', 'http://purl.org/dc/terms/rights'))) . '</p>' . "\n";
@@ -41,7 +41,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       if (strlen($history) > 0) {
         $ret .=  '<h' . ($level + 1) . ' id="sec-history">History</h' . ($level + 1) . '>'. $history;
       }
-    }    
+    }
 
 
     $inverse_index = $this->desc->get_inverse_index();
@@ -55,11 +55,11 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     else if (array_key_exists($resource_uri . '#', $inverse_index) && array_key_exists(RDFS_ISDEFINEDBY, $inverse_index[$resource_uri . '#'])) {
       $def_uri =  $resource_uri . '#';
     }
-    
+
     $term_list = array();
     $property_list= array();
     $class_list= array();
-    
+
     if (strlen($def_uri) > 0) {
 
       $terms = $inverse_index[$def_uri][RDFS_ISDEFINEDBY];
@@ -79,14 +79,14 @@ class PAGET_OntologyWidget extends PAGET_Widget {
                                                                   'id'=>$term_id,
                                                                 );
           }
-        }    
+        }
       }
     }
-    if (count($term_list)  > 0) { 
+    if (count($term_list)  > 0) {
       ksort( $term_list );
     }
 
-    
+
     if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/preferredNamespaceUri') || $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/preferredNamespacePrefix' ) ) {
       $ret .= '<h' . ($level + 1) . ' id="sec-namespace">Namespace</h' . ($level + 1) . '>' . "\n";
       if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/preferredNamespaceUri') ) {
@@ -97,9 +97,9 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       }
 
       $ret .= '<p>Each class or property in the vocabulary has a URI constructed by appending a term name to the vocabulary URI. For example:</p><pre><code>' . htmlspecialchars($term_list[array_rand($term_list)]['uri']) . '</code></pre>' . "\n";
-    }    
-    
-    
+    }
+
+
     if (count($term_list) > 2) {
       $ret .=  '<h' . ($level + 1) . ' id="sec-summary">Term Summary</h' . ($level + 1) . '>' . "\n";
       $ret .= '<table><tr><th>Term</th><th>URI</th></tr>' . "\n";
@@ -115,10 +115,10 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       }
       $ret .= '</table>' . "\n";
     }
-    
-    
 
-    if (count($term_list)  > 0) { 
+
+
+    if (count($term_list)  > 0) {
       $ret .=  '<h' . ($level + 1) . ' id="sec-terms">Properties and Classes</h' . ($level + 1) . '>' . "\n";
       foreach ($term_list as $term_info) {
         $term_id_fragment = '';
@@ -126,19 +126,27 @@ class PAGET_OntologyWidget extends PAGET_Widget {
           $term_id_fragment = ' id="' . htmlspecialchars($term_info['id']) . '"';
         }
         $ret .= '<h' . ($level + 2)  . $term_id_fragment . '>' .htmlspecialchars( $term_info['label']) . '</h' . ($level + 2)  . '>';
-        $ret .=  $term_info['html'] . "\n"; 
+        $ret .=  $term_info['html'] . "\n";
       }
     }
 
 
-    
-  
-        
+
+
+
     if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/example')) {
       $ret .=  '<h' . ($level + 1) . ' id="sec-examples">Examples</h' . ($level + 1) . '>';
       foreach ($index[$resource_uri]['http://purl.org/vocab/vann/example'] as $v_info) {
-        $ret .=  $this->template->render($v_info);      
-        
+        $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example', 'en');
+        $comment = $this->desc->get_first_literal($v_info['value'], array(RDFS_COMMENT), '', 'en');
+        if ($comment) {
+          $ret .=  '<h' . ($level + 2) . '>' . htmlspecialchars($title) . '</h' . ($level + 2) . '>';
+          $ret .=  $comment;
+        }
+        else {
+          $ret .=  $this->template->render($v_info);
+        }
+
 /*
           if ( $p == 'http://purl.org/vocab/vann/example' && $v_info['type'] == 'uri') {
             $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example', 'en');
@@ -147,13 +155,13 @@ class PAGET_OntologyWidget extends PAGET_Widget {
           else {
 */
 //            $ret .=  '<div style="width:100%;"><iframe src="'  . htmlspecialchars($v_info['value']). '"  style="width:100%; border:0px;"></iframe></div>';
-/*  
+/*
           }
 */
       }
     }
 
-    
+
     $data_widget = new PAGET_TableDataWidget($this->desc, $this->template, $this->urispace);
     $data_widget->ignore_properties(array(RDF_TYPE, DC_TITLE, 'http://purl.org/dc/terms/title', RDFS_LABEL, DC_DESCRIPTION, 'http://purl.org/dc/terms/description', RDFS_COMMENT, 'http://purl.org/vocab/vann/example'));
     $data_widget->ignore_properties(array(DC_CREATOR, 'http://purl.org/dc/terms/creator', 'http://purl.org/dc/terms/contributor'));
@@ -176,21 +184,21 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       if (array_key_exists($p, $index[$resource_uri])) {
         foreach ($index[$resource_uri][$p] as $property_info) {
           $items[] = '<dd>' . $this->template->render($property_info, FALSE, TRUE) . '</dd>';
-        }      
+        }
       }
-    }  
-    
+    }
+
     if (count($items) > 0) {
       $ret .= '<dt>';
       if (count($items) > 1) {
-        $ret .= $plural_label;  
-      }  
+        $ret .= $plural_label;
+      }
       else {
-        $ret .= $singular_label;  
+        $ret .= $singular_label;
       }
       $ret .= '</dt>' . join('', $items);
-    }    
-    
+    }
+
     return $ret;
   }
 
@@ -198,7 +206,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     if (preg_match('~^(.*[\/\#])([a-z0-9\-\_]+)$~i', $uri, $m)) {
       return $m[2];
     }
-    return null;    
+    return null;
   }
 
 

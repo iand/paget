@@ -116,7 +116,6 @@ class PAGET_OntologyWidget extends PAGET_Widget {
         
         $list_values = array();
         foreach ($list_items as $number => $values) {
-          var_dump($values);
           foreach ($values['values'] as $value_info) {
             $list_values[] = array('label' => $tw->get_title($value_info['value']), 'id' => $this->localname($value_info['value']));
           }

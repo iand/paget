@@ -81,6 +81,26 @@ class PAGET_TermWidget extends PAGET_Widget {
   
     $ret .= '</div>';
   
+    if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/usageNote') ) {
+      $ret .= '<h' . ($level + 1) . '>Usage</h' . ($level + 1) . '>';
+      $literal_widget = new PAGET_LiteralWidget($this->desc, $this->template, $this->urispace);
+      foreach ($this->desc->get_subject_property_values($resource_uri, 'http://purl.org/vocab/vann/usageNote') as $value) {
+        $ret .= sprintf('<div class="usagenote">%s</div>', $literal_widget->render($value, FALSE, FALSE));
+      }
+    }
+
+    if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/example') ) {
+      $ret .= '<h' . ($level + 1) . '>Examples</h' . ($level + 1) . '>';
+      foreach ($this->desc->get_subject_property_values($resource_uri, 'http://purl.org/vocab/vann/example') as $v_info) {
+        $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Example', 'en');
+        $comment = $this->desc->get_first_literal($v_info['value'], array(RDFS_COMMENT), '', 'en');
+        if ($comment) {
+          $ret .=  '<h' . ($level + 2) . '>' . htmlspecialchars($title) . '</h' . ($level + 2) . '>';
+          $ret .=  $comment;
+        }
+      }
+
+    }
   
     if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
       $ret .= '<h' . ($level + 1) . '>History</h' . ($level + 1) . '>';
@@ -93,6 +113,7 @@ class PAGET_TermWidget extends PAGET_Widget {
     $data_widget->ignore_properties(array(RDF_TYPE, DC_TITLE, RDFS_LABEL, DC_DESCRIPTION, RDFS_COMMENT, 'http://purl.org/vocab/vann/example', 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status', 'http://www.w3.org/2004/02/skos/core#definition'));
     $data_widget->ignore_properties(array(OWL_EQUIVALENTCLASS, RDFS_RANGE, RDFS_DOMAIN, OWL_DISJOINTWITH, RDFS_SUBCLASSOF, RDFS_SUBPROPERTYOF, OWL_EQUIVALENTPROPERTY, OWL_INVERSEOF, OWL_SYMMETRICPROPERTY, OWL_FUNCTIONALPROPERTY, OWL_INVERSEFUNCTIONALPROPERTY, OWL_TRANSITIVEPROPERTY ));
     $data_widget->ignore_properties(array('http://www.w3.org/2004/02/skos/core#changeNote', 'http://www.w3.org/2004/02/skos/core#historyNote', 'http://purl.org/dc/terms/issued'));
+    $data_widget->ignore_properties(array('http://purl.org/vocab/vann/usageNote', 'http://purl.org/net/vocab/2004/03/label#plural'));
     $other .= $data_widget->render($resource_info, FALSE, FALSE);    
     if (strlen(trim($other)) > 0) {
       $ret .=  '<h' . ($level + 1) . '>Other Information</h' . ($level + 1) . '>' . $other;
@@ -149,7 +170,7 @@ class PAGET_TermWidget extends PAGET_Widget {
 
       if (strlen($status) > 0) {
         $info .= $this->add_period_if_needed($info);
-        $info .= 'This term ' . $status;
+        $info .= ' This term ' . $status;
       }    
     }    
     return $info;
@@ -167,15 +188,19 @@ class PAGET_TermWidget extends PAGET_Widget {
     if ( array_key_exists($uri, $index)) {
       if ( array_key_exists($property, $index[$uri])) {
         $ret .=  htmlspecialchars($prefix) . ' ';
+        $values = array();
         for ($i = 0 ; $i < count($index[$uri][$property]); $i++) {
-          if ($i > 0) {
-            if ($i < count($index[$uri][$property]) - 1) { $ret .=  ', '; }      
-            else if ($i == count($index[$uri][$property]) - 1) { $ret .=  ' ' . $conjunction . ' '; }      
+          if ($index[$uri][$property][$i]['value'] != $uri) {
+            $values[] = $index[$uri][$property][$i];
           }
-          $text = $index[$uri][$property][$i]['value'];
-
-
-          
+        }
+        
+        for ($i = 0 ; $i < count($values); $i++) {
+          if ($i > 0) {
+            if ($i < count($values) - 1) { $ret .=  ', '; }      
+            else if ($i == count($values) - 1) { $ret .=  ' ' . $conjunction . ' '; }      
+          }
+          $text = $values[$i]['value'];
           $ret .=  $this->link_uri($text, '', $use_definite_article);
         }
         $ret .=  htmlspecialchars($suffix);

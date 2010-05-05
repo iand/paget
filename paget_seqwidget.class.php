@@ -2,14 +2,6 @@
 require_once 'paget_widget.class.php';
 
 class PAGET_SeqWidget extends PAGET_Widget {
-  var $desc;
-  var $template;
-  
-  function __construct(&$desc, $template = NULL) {
-    $this->desc = $desc;  
-    $this->template = $template;  
-  }
-
   function render($resource_info, $inline = FALSE) {
     $data = array();
     $resource_uri = $resource_info['value'];
@@ -23,7 +15,13 @@ class PAGET_SeqWidget extends PAGET_Widget {
     
     ksort($list_items, SORT_NUMERIC);
     if ($inline) {
-
+      $list_values = array();
+      foreach ($list_items as $number => $values) {
+        foreach ($values['values'] as $value_info) {
+          $list_values[] = $value_info;
+        }
+      }
+      $ret .= $this->format_property_values('', $list_values);
     }
     else {
       $ret .= '<ol>';

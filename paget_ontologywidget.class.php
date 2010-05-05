@@ -210,6 +210,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     $data_widget->ignore_properties(array(DC_CREATOR, 'http://purl.org/dc/terms/creator', 'http://purl.org/dc/terms/contributor'));
     $data_widget->ignore_properties(array('http://vocab.org.local/vann/preferredNamespaceUri', 'http://vocab.org.local/vann/preferredNamespacePrefix', 'http://purl.org/dc/elements/1.1/rights', 'http://purl.org/dc/terms/rights', ));
     $data_widget->ignore_properties(array('http://www.w3.org/2004/02/skos/core#changeNote', 'http://www.w3.org/2004/02/skos/core#historyNote', 'http://purl.org/dc/terms/issued'));
+    $data_widget->ignore_properties(array('http://vocab.org.local/vann/termGroup'));
     $other = $data_widget->render($resource_info, FALSE, FALSE, $level + 2);
     if (strlen(trim($other)) > 0) {
       $ret .=  '<h' . ($level + 1) . '>Other Information</h' . ($level + 1) . '>' . $other;

@@ -208,9 +208,9 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     $data_widget = new PAGET_TableDataWidget($this->desc, $this->template, $this->urispace);
     $data_widget->ignore_properties(array(RDF_TYPE, DC_TITLE, 'http://purl.org/dc/terms/title', RDFS_LABEL, DC_DESCRIPTION, 'http://purl.org/dc/terms/description', RDFS_COMMENT, 'http://purl.org/vocab/vann/example'));
     $data_widget->ignore_properties(array(DC_CREATOR, 'http://purl.org/dc/terms/creator', 'http://purl.org/dc/terms/contributor'));
-    $data_widget->ignore_properties(array('http://vocab.org/vann/preferredNamespaceUri', 'http://vocab.org/vann/preferredNamespacePrefix', 'http://purl.org/dc/elements/1.1/rights', 'http://purl.org/dc/terms/rights', ));
+    $data_widget->ignore_properties(array('http://purl.org/vocab/vann/preferredNamespaceUri', 'http://purl.org/vocab/vann/preferredNamespacePrefix', 'http://purl.org/dc/elements/1.1/rights', 'http://purl.org/dc/terms/rights', ));
     $data_widget->ignore_properties(array('http://www.w3.org/2004/02/skos/core#changeNote', 'http://www.w3.org/2004/02/skos/core#historyNote', 'http://purl.org/dc/terms/issued'));
-    $data_widget->ignore_properties(array('http://vocab.org/vann/termGroup'));
+    $data_widget->ignore_properties(array('http://purl.org/vocab/vann/termGroup'));
     $other = $data_widget->render($resource_info, FALSE, FALSE, $level + 2);
     if (strlen(trim($other)) > 0) {
       $ret .=  '<h' . ($level + 1) . '>Other Information</h' . ($level + 1) . '>' . $other;

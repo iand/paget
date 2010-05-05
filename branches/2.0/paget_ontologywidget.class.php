@@ -99,10 +99,48 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       $ret .= '<p>Each class or property in the vocabulary has a URI constructed by appending a term name to the vocabulary URI. For example:</p><pre><code>' . htmlspecialchars($term_list[array_rand($term_list)]['uri']) . '</code></pre>' . "\n";
     }
 
-
+    if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/termGroup') ) {
+      $ret .=  '<h' . ($level + 1) . '>Terms Grouped by Theme</h' . ($level + 1) . '>' . "\n";
+      foreach ($index[$resource_uri]['http://purl.org/vocab/vann/termGroup'] as $v_info) {
+        $title = $this->desc->get_first_literal($v_info['value'], array(RDFS_LABEL, DC_TITLE), 'Group', 'en');
+        $ret .=  '<p>' . htmlspecialchars($title) . ': ';
+        
+        $props = $this->desc->get_subject_properties($v_info['value'], TRUE);
+        $list_items = array();
+        foreach ($props as $prop) {
+          if ( preg_match("~^http://www.w3.org/1999/02/22-rdf-syntax-ns#_(\d+)$~", $prop, $m)) {
+            $list_items[$m[1]] = array('property' => $prop, 'values' => $this->desc->get_subject_property_values($v_info['value'], $prop));
+          }
+        }
+        $tw = new PAGET_TermWidget($this->desc, $this->template, $this->urispace);
+        
+        $list_values = array();
+        foreach ($list_items as $number => $values) {
+          var_dump($values);
+          foreach ($values['values'] as $value_info) {
+            $list_values[] = array('label' => $tw->get_title($value_info['value']), 'id' => $this->localname($value_info['value']));
+          }
+        }
+        for ($i = 0; $i < count($list_values); $i++) {
+          if ($i > 0) {
+            if ($i < count($list_values) - 1) {
+              $ret .= ', ';
+            }
+            else {
+              $ret .= ' and ';
+            }
+          }           
+          $ret .= '<a href="#' . htmlspecialchars($list_values[$i]['id']) . '">' . htmlspecialchars($list_values[$i]['label']) . '</a>';
+        
+        }
+        $ret .= '</p>';
+      }
+    }
+    
     if (count($term_list) > 2) {
       $ret .=  '<h' . ($level + 1) . ' id="sec-summary">Term Summary</h' . ($level + 1) . '>' . "\n";
-      $ret .= '<table><tr><th>Term</th><th>URI</th></tr>' . "\n";
+      $ret .= '<p>An alphabetical list of all terms defined in this schema.</p>' . "\n";
+      $ret .= '<table><tr><th>Term</th><th>URI</th><th>Description</th></tr>' . "\n";
       foreach ($term_list as $term_info) {
         $ret .= '<tr><td>';
         if ($term_info['id'] != null) {
@@ -111,7 +149,13 @@ class PAGET_OntologyWidget extends PAGET_Widget {
         else {
           $ret .= htmlspecialchars($term_info['label']);
         }
-        $ret .= '</td><td nowrap="nowrap">' . htmlspecialchars($term_info['uri']) .'</td></tr>'. "\n";
+        $ret .= '</td><td nowrap="nowrap">' . htmlspecialchars($term_info['uri']) .'</td>'. "\n";
+        $desc = $term_info['desc'];
+        $stoppos = strpos($desc, '.');
+        if ($stoppos >0) {
+          $desc = substr($desc, 0, $stoppos + 1);
+        }
+        $ret .= '<td>' . htmlspecialchars($desc) .'</td></tr>'. "\n";
       }
       $ret .= '</table>' . "\n";
     }

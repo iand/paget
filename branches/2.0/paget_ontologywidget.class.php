@@ -31,6 +31,15 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       }
     }
 
+    if ( $this->desc->subject_has_property($resource_uri, 'http://open.vocab.org/terms/discussionList') ) {
+      $discussion_list = $this->desc->get_first_resource($resource_uri, 'http://open.vocab.org/terms/discussionList');
+      $discussion_list_label = $this->desc->get_label($discussion_list);
+      if ($discussion_list_label == $discussion_list) {
+        $discussion_list_label = 'mailing list';
+      }
+      $ret .= sprintf('<p>Please direct feedback on this document to the <a href="%s">%s</a></p>' . "\n", htmlspecialchars($discussion_list), htmlspecialchars( $discussion_list_label ) );
+    }
+
     if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/elements/1.1/rights') || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/rights') ) {
       $ret .= '<p>' . htmlspecialchars($this->desc->get_first_literal($resource_uri, array('http://purl.org/dc/elements/1.1/rights', 'http://purl.org/dc/terms/rights'))) . '</p>' . "\n";
     }
@@ -210,7 +219,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
     $data_widget->ignore_properties(array(DC_CREATOR, 'http://purl.org/dc/terms/creator', 'http://purl.org/dc/terms/contributor'));
     $data_widget->ignore_properties(array('http://purl.org/vocab/vann/preferredNamespaceUri', 'http://purl.org/vocab/vann/preferredNamespacePrefix', 'http://purl.org/dc/elements/1.1/rights', 'http://purl.org/dc/terms/rights', ));
     $data_widget->ignore_properties(array('http://www.w3.org/2004/02/skos/core#changeNote', 'http://www.w3.org/2004/02/skos/core#historyNote', 'http://purl.org/dc/terms/issued'));
-    $data_widget->ignore_properties(array('http://purl.org/vocab/vann/termGroup'));
+    $data_widget->ignore_properties(array('http://purl.org/vocab/vann/termGroup', 'http://open.vocab.org/terms/discussionList', 'http://purl.org/dc/terms/identifier', 'http://purl.org/dc/terms/date'));
     $other = $data_widget->render($resource_info, FALSE, FALSE, $level + 2);
     if (strlen(trim($other)) > 0) {
       $ret .=  '<h' . ($level + 1) . '>Other Information</h' . ($level + 1) . '>' . $other;

@@ -16,12 +16,21 @@ class PAGET_TermWidget extends PAGET_Widget {
     $inverse_index = $this->desc->get_inverse_index();
     $is_property = $this->desc->has_resource_triple( $resource_uri, RDF_TYPE, RDF_PROPERTY );
 
-    $ret .= '<div class="termuri"><strong>URI:</strong> ' . $this->link_uri($resource_uri, $resource_uri) . '</div>';
-    $ret .= '<div class="terminfo">' . htmlspecialchars($this->get_description($resource_uri)) . ' ';
+    $ret .= '<p class="termuri"><strong>URI:</strong> ' . $this->link_uri($resource_uri, $resource_uri) . '</p>';
+    $ret .= '<p class="terminfo">' . htmlspecialchars($this->get_description($resource_uri)) . '</p>';
     
     $data = array();
 
+    if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/usageNote') ) {
+      $ret .= '<h' . ($level + 1) . '>Usage</h' . ($level + 1) . '>';
+      $literal_widget = new PAGET_LiteralWidget($this->desc, $this->template, $this->urispace);
+      foreach ($this->desc->get_subject_property_values($resource_uri, 'http://purl.org/vocab/vann/usageNote') as $value) {
+        $ret .= sprintf('<div class="usagenote">%s</div>', $literal_widget->render($value, FALSE, FALSE));
+      }
+    }
 
+
+    $semantics = '';
     if ($is_property) {
       $characteristics = array();
       
@@ -40,53 +49,48 @@ class PAGET_TermWidget extends PAGET_Widget {
     
         
       if ( count($characteristics) > 0 ) {
-        $ret .=  'This property is ';
+        $semantics .=  'This property is ';
         for ($i = 0; $i < count($characteristics); $i++) {
           if ( $i > 0 ) {
-            if ($i == count($characteristics) - 1) { $ret .= ' and '; }
-            else { $ret .=  ', '; }
+            if ($i == count($characteristics) - 1) { $semantics .= ' and '; }
+            else { $semantics .=  ', '; }
           }
-          $ret .=  $characteristics[$i];
+          $semantics .=  $characteristics[$i];
         }
-        $ret .= '. '; 
+        $semantics .= '. '; 
       }
       
-      $ret .= $this->list_relations_prose($index, $resource_uri, RDFS_DOMAIN, 'Having this property implies being ','. ');
-      $ret .= $this->list_relations_prose($index, $resource_uri, RDFS_RANGE, 'Every value of this property is ','. ');
+      $semantics .= $this->list_relations_prose($index, $resource_uri, RDFS_DOMAIN, 'Having this property implies being ','. ');
+      $semantics .= $this->list_relations_prose($index, $resource_uri, RDFS_RANGE, 'Every value of this property is ','. ');
 
       if ( $this->desc->subject_has_property($resource_uri, OWL_INVERSEOF ) ) {
         if ( $this->desc->subject_has_property($resource_uri, RDFS_SUBPROPERTYOF ) ) {
-          $ret .= $this->list_relations_prose($index, $resource_uri, RDFS_SUBPROPERTYOF, 'It is a sub-property of ', ' and ', FALSE);
+          $semantics .= $this->list_relations_prose($index, $resource_uri, RDFS_SUBPROPERTYOF, 'It is a sub-property of ', ' and ', FALSE);
         }
         else {
-          $ret .= 'It is ';  
+          $semantics .= 'It is ';  
         }
-        $ret .= $this->list_relations_prose($index, $resource_uri, OWL_INVERSEOF, 'the inverse of ', '', FALSE);
+        $semantics .= $this->list_relations_prose($index, $resource_uri, OWL_INVERSEOF, 'the inverse of ', '', FALSE);
       }
       else {
-        $ret .= $this->list_relations_prose($index, $resource_uri, RDFS_SUBPROPERTYOF, 'It is a sub-property of ', '. ', FALSE);
+        $semantics .= $this->list_relations_prose($index, $resource_uri, RDFS_SUBPROPERTYOF, 'It is a sub-property of ', '. ', FALSE);
       }
-      $ret .= $this->list_relations_prose($index, $resource_uri, OWL_EQUIVALENTPROPERTY, 'It is equivalent to ', '', FALSE);
+      $semantics .= $this->list_relations_prose($index, $resource_uri, OWL_EQUIVALENTPROPERTY, 'It is equivalent to ', '', FALSE);
       
       
     }
     else {
 
-      $ret .= $this->list_relations_prose($index, $resource_uri, RDFS_SUBCLASSOF, 'Being a member of this class implies also being a member of ', '. ', false);
-      $ret .= $this->list_relations_prose($index, $resource_uri, OWL_DISJOINTWITH, 'No member of this class can also be a member of ', '. ', false, 'or');
-      $ret .= $this->list_relations_prose($inverse_index, $resource_uri, RDFS_DOMAIN, 'Having', ' implies being a member of this class. ', true, 'or');
-      $ret .= $this->list_relations_prose($inverse_index, $resource_uri, RDFS_RANGE, 'Things are a member of this class if they are the value of ', '. ', true, 'or');
-      $ret .= $this->list_relations_prose($index, $resource_uri, OWL_EQUIVALENTCLASS, 'It is equivalent to ', '. ', FALSE);
+      $semantics .= $this->list_relations_prose($index, $resource_uri, RDFS_SUBCLASSOF, 'Being a member of this class implies also being a member of ', '. ', false);
+      $semantics .= $this->list_relations_prose($index, $resource_uri, OWL_DISJOINTWITH, 'No member of this class can also be a member of ', '. ', false, 'or');
+      $semantics .= $this->list_relations_prose($inverse_index, $resource_uri, RDFS_DOMAIN, 'Having', ' implies being a member of this class. ', true, 'or');
+      $semantics .= $this->list_relations_prose($inverse_index, $resource_uri, RDFS_RANGE, 'Things are a member of this class if they are the value of ', '. ', true, 'or');
+      $semantics .= $this->list_relations_prose($index, $resource_uri, OWL_EQUIVALENTCLASS, 'It is equivalent to ', '. ', FALSE);
     }
   
-    $ret .= '</div>';
-  
-    if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/usageNote') ) {
-      $ret .= '<h' . ($level + 1) . '>Usage</h' . ($level + 1) . '>';
-      $literal_widget = new PAGET_LiteralWidget($this->desc, $this->template, $this->urispace);
-      foreach ($this->desc->get_subject_property_values($resource_uri, 'http://purl.org/vocab/vann/usageNote') as $value) {
-        $ret .= sprintf('<div class="usagenote">%s</div>', $literal_widget->render($value, FALSE, FALSE));
-      }
+    if ($semantics) {
+      $ret .= '<h' . ($level + 1) . '>Semantics</h' . ($level + 1) . '>';
+      $ret .= sprintf('<p class="termsemantics">%s</p>', $semantics);
     }
 
     if ( $this->desc->subject_has_property($resource_uri, 'http://purl.org/vocab/vann/example') ) {
@@ -103,7 +107,25 @@ class PAGET_TermWidget extends PAGET_Widget {
     }
   
     if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
-      $ret .= '<h' . ($level + 1) . '>History</h' . ($level + 1) . '>';
+      $ret .= '<h' . ($level + 1) . '>Status</h' . ($level + 1) . '>';
+
+      if ($this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status')) {
+        $status_code = $this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status', '');
+        if ( $status_code == 'unstable') {
+          $status = 'is deemed to be semantically unstable and is subject to its meaning being changed.'; 
+        }
+        else if ( $status_code == 'stable') {
+          $status = 'is deemed to be semantically stable and its meaning should not change in the foreseable future.'; 
+        }
+        else if ( $status_code == 'testing') {
+          $status = 'is undergoing testing to determine if it is semantically stable and its meaning may change in the foreseable future.';  
+        }
+      }
+    
+      if ($status) {
+        $ret .= sprintf('<p class="termstatus">This term %s</p>', $status);
+      }
+
       $history_widget = new PAGET_HistoryWidget($this->desc, $this->template, $this->urispace);
       $ret .= $history_widget->render($resource_info, FALSE, FALSE);
     }    
@@ -137,19 +159,6 @@ class PAGET_TermWidget extends PAGET_Widget {
       $intro = 'A class whose members are ';
     }
 
-    
-    if ($this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status')) {
-      $status_code = $this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status', '');
-      if ( $status_code == 'unstable') {
-        $status = 'is deemed to be semantically unstable and is subject to its meaning being changed.'; 
-      }
-      else if ( $status_code == 'stable') {
-        $status = 'is deemed to be semantically stable and its meaning should not change in the foreseable future.'; 
-      }
-      else if ( $status_code == 'testing') {
-        $status = 'is undergoing testing to determine if it is semantically stable and its meaning may change in the foreseable future.';  
-      }
-    }
     
     if ($this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition')) {
       if (strlen($info) == 0 && strlen(intro) > 0) {

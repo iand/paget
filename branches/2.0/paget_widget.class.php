@@ -62,7 +62,7 @@ class PAGET_Widget {
       $html .= ' <span class="lang">[' . htmlspecialchars($resource_info['lang']) . ']</span>';
     }
     if (isset($resource_info['datatype'])) {
-      $html .= ' <span class="dt">[' . $this->link_uri($resource_info['datatype']) . ']</span>';
+      //$html .= ' <span class="dt">[' . $this->link_uri($resource_info['datatype']) . ']</span>';
     }
     $html .= '</div>';
     return $html;

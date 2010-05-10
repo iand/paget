@@ -24,6 +24,13 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       $ret .= '<dl class="doc-info">' . join('', $people_info) . '</dl>';
     }
 
+    $abstracts = $this->desc->get_literal_triple_values($resource_uri, array('http://purl.org/dc/terms/abstract'));
+    if (count($abstracts) > 0) {
+      foreach ($abstracts as $abstract) {
+        $ret .=  '<p class="abstract">' . htmlspecialchars($abstract) . '</p>';
+      }
+    }
+
     $descriptions = $this->desc->get_literal_triple_values($resource_uri, array('http://purl.org/dc/terms/description', DC_DESCRIPTION, RDFS_COMMENT));
     if (count($descriptions) > 0) {
       foreach ($descriptions as $description) {

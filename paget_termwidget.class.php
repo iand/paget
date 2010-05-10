@@ -80,7 +80,43 @@ class PAGET_TermWidget extends PAGET_Widget {
       
     }
     else {
-
+      $restrictions = array();
+      if ( $this->desc->subject_has_property($resource_uri, RDFS_SUBCLASSOF ) ) {
+        foreach ($this->desc->get_resource_triple_values($resource_uri, RDFS_SUBCLASSOF) as $super_uri) {
+          if ($this->desc->has_resource_triple($super_uri, RDF_TYPE, 'http://www.w3.org/2002/07/owl#Restriction') ) {
+            $restricted_property = $this->desc->get_first_resource($super_uri, 'http://www.w3.org/2002/07/owl#onProperty');
+            if ($this->desc->subject_has_property($super_uri, 'http://www.w3.org/2002/07/owl#cardinality')) {
+              $restriction_value = $this->desc->get_first_literal($super_uri, 'http://www.w3.org/2002/07/owl#cardinality');
+              $restrictions[] = sprintf('exactly %s %s property', $restriction_value, $this->link_uri($restricted_property) );
+            }
+            else if ($this->desc->subject_has_property($super_uri, 'http://www.w3.org/2002/07/owl#minCardinality')) {
+              $restriction_value = $this->desc->get_first_literal($super_uri, 'http://www.w3.org/2002/07/owl#minCardinality');
+              $restrictions[] = sprintf('at least %s %s properties', $restriction_value, $this->link_uri($restricted_property) );
+            }
+            else if ($this->desc->subject_has_property($super_uri, 'http://www.w3.org/2002/07/owl#maxCardinality')) {
+              $restriction_value = $this->desc->get_first_literal($super_uri, 'http://www.w3.org/2002/07/owl#maxCardinality');
+              $restrictions[] = sprintf('at most %s %s properties', $restriction_value, $this->link_uri($restricted_property) );
+            }
+          }
+        }
+      }
+      
+      if ($restrictions) {
+        $semantics .= 'Every member of this class has ';
+        for ($i = 0; $i < count($restrictions); $i++) {
+          if ($i > 0) {
+            if ($i == count($restrictions) - 1) {
+              $semantics .= ' and ';
+            }
+            else {
+              $semantics .= ', ';
+            }
+          }
+          $semantics .= $restrictions[$i];
+        }
+        $semantics .= '. ';
+      }
+      
       $semantics .= $this->list_relations_prose($index, $resource_uri, RDFS_SUBCLASSOF, 'Being a member of this class implies also being a member of ', '. ', false);
       $semantics .= $this->list_relations_prose($index, $resource_uri, OWL_DISJOINTWITH, 'No member of this class can also be a member of ', '. ', false, 'or');
       $semantics .= $this->list_relations_prose($inverse_index, $resource_uri, RDFS_DOMAIN, 'Having', ' implies being a member of this class. ', true, 'or');
@@ -200,7 +236,18 @@ class PAGET_TermWidget extends PAGET_Widget {
         $values = array();
         for ($i = 0 ; $i < count($index[$uri][$property]); $i++) {
           if ($index[$uri][$property][$i]['value'] != $uri) {
-            $values[] = $index[$uri][$property][$i];
+            $is_restriction = FALSE;
+            $value = $index[$uri][$property][$i]['value'];
+            if ( isset($index[$value][RDF_TYPE]) ) {
+              for ($tmp = 0; $tmp < count($index[$value][RDF_TYPE]); $tmp++) {
+                if ($index[$value][RDF_TYPE][$tmp]['value'] == 'http://www.w3.org/2002/07/owl#Restriction') {
+                  $is_restriction = TRUE;
+                }
+              }
+            }
+            if (! $is_restriction) {
+              $values[] = $index[$uri][$property][$i];
+            }
           }
         }
         

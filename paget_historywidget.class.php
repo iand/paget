@@ -13,7 +13,7 @@ class PAGET_HistoryWidget extends PAGET_Widget {
       foreach ($index[$resource_uri] as $p => $v_list) {
         foreach ($v_list as $v_info) {
           if ( $p == 'http://purl.org/dc/terms/issued' && $v_info['type'] == 'literal') {
-            $items[] = array('text' => 'first issued', 'date' => $v_info['value']);
+            $items[] = sprintf('%s - first issued', $v_info['value']);
           }
           else if ( $p == 'http://www.w3.org/2004/02/skos/core#changeNote' && ( $v_info['type'] == 'uri' || $v_info['type'] == 'bnode') ) {
             $text = htmlspecialchars($this->desc->get_label($v_info['value']));
@@ -24,7 +24,7 @@ class PAGET_HistoryWidget extends PAGET_Widget {
             $creator = $this->format_property_values('http://purl.org/dc/terms/creator', $this->desc->get_subject_property_values($v_info['value'], array('http://purl.org/dc/terms/creator', 'http://purl.org/dc/elements/1.1/creator')) );
 
 
-            $items[] = array('text' => 'editorial change by ' . $creator . ': ' . $text, 'date' => $date);
+            $items[] = sprintf('%s - editorial change by %s: %s', $date, $creator, $text);
           } 
           else if ( $p == 'http://www.w3.org/2004/02/skos/core#historyNote' ) {
             $text = htmlspecialchars($this->desc->get_label($v_info['value']));
@@ -34,15 +34,17 @@ class PAGET_HistoryWidget extends PAGET_Widget {
             $date = $this->format_property_values('http://purl.org/dc/terms/date', $this->desc->get_subject_property_values($v_info['value'], array('http://purl.org/dc/terms/date', 'http://purl.org/dc/elements/1.1/date')) );
             $creator = $this->format_property_values('http://purl.org/dc/terms/creator', $this->desc->get_subject_property_values($v_info['value'], array('http://purl.org/dc/terms/creator', 'http://purl.org/dc/elements/1.1/creator')) );
 
-            $items[] = array('text' => 'semantic change by ' . $creator . ': ' . $text, 'date' => $date);
+            $items[] = sprintf('%s - semantic change by %s: %s', $date, $creator, $text);
           }       
         }     
       }
       
+      sort($items);
+      
       if ( count($items) > 0 ) {
         $ret .= "<ul>\n";
         foreach ($items as $item) {
-          $ret .= "<li>" . $item['date'] . ' - ' . $item['text'] . "</li>\n";
+          $ret .= "<li>" . $item . "</li>\n";
         }
         $ret .= "</ul>\n";
       }

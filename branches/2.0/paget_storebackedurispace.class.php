@@ -2,6 +2,7 @@
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_urispace.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_abstractresource.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storebackedresourcedescription.class.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_filebackedresourcedescription.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storesearch.class.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'paget_storeoai.class.php';
 
@@ -10,6 +11,7 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
   var $_description_template;
   var $_search_template;
   var $_base_path = '/';
+  var $_static_data = array() ;
   var $_ns = array();
   function __construct($store_uri) {
     $this->_store_uri = $store_uri; 
@@ -40,7 +42,12 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
       }
       else {
         $resource_uri = preg_replace("~\.local/~", "/", substr($request->uri, 0, strlen($request->uri)-strlen($type) - 1));
-        $desc = new PAGET_StoreBackedResourceDescription($request_uri, $resource_uri, $type, $this->_store_uri); 
+        if (isset($this->_static_data[$resource_uri])) {
+          $desc = new PAGET_FileBackedResourceDescription($request_uri, $resource_uri, $type, $this->_static_data[$resource_uri], 'rdfxml'); 
+        }
+        else {
+          $desc = new PAGET_StoreBackedResourceDescription($request_uri, $resource_uri, $type, $this->_store_uri); 
+        }
         $desc->set_template($this->_description_template);
         foreach ($this->_ns as $short_name => $uri) {
           $desc->set_namespace_mapping($short_name , $uri);
@@ -61,6 +68,9 @@ class PAGET_StoreBackedUriSpace extends PAGET_UriSpace {
     $this->_ns[$short_name] = $uri;
   }
 
+  function set_static_data($resource_uri, $filename) {
+    $this->_static_data[$resource_uri] = $filename;
+  }
   function set_description_template($filename) {
     $this->_description_template = $filename;    
   }

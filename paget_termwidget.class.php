@@ -6,7 +6,7 @@ class PAGET_TermWidget extends PAGET_Widget {
   function render($resource_info, $inline = FALSE, $brief = FALSE, $level = 1) {
     if ($brief) return $this->render_brief($resource_info, $inline);
     $resource_uri = $resource_info['value'];
-   
+    $ret = '';
     if (!$inline) {
       $ret .= '<h' . $level  . '>' .htmlspecialchars( $this->get_title($resource_uri)) . '</h' . $level  . '>';
     }
@@ -145,6 +145,7 @@ class PAGET_TermWidget extends PAGET_Widget {
     if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
       $ret .= '<h' . ($level + 1) . '>Status</h' . ($level + 1) . '>';
 
+      $status = '';
       if ($this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status')) {
         $status_code = $this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2003/06/sw-vocab-status/ns#term_status', '');
         if ( $status_code == 'unstable') {
@@ -172,7 +173,7 @@ class PAGET_TermWidget extends PAGET_Widget {
     $data_widget->ignore_properties(array(OWL_EQUIVALENTCLASS, RDFS_RANGE, RDFS_DOMAIN, OWL_DISJOINTWITH, RDFS_SUBCLASSOF, RDFS_SUBPROPERTYOF, OWL_EQUIVALENTPROPERTY, OWL_INVERSEOF, OWL_SYMMETRICPROPERTY, OWL_FUNCTIONALPROPERTY, OWL_INVERSEFUNCTIONALPROPERTY, OWL_TRANSITIVEPROPERTY ));
     $data_widget->ignore_properties(array('http://www.w3.org/2004/02/skos/core#changeNote', 'http://www.w3.org/2004/02/skos/core#historyNote', 'http://purl.org/dc/terms/issued'));
     $data_widget->ignore_properties(array('http://purl.org/vocab/vann/usageNote', 'http://purl.org/net/vocab/2004/03/label#plural'));
-    $other .= $data_widget->render($resource_info, FALSE, FALSE);    
+    $other = $data_widget->render($resource_info, FALSE, FALSE);    
     if (strlen(trim($other)) > 0) {
       $ret .=  '<h' . ($level + 1) . '>Other Information</h' . ($level + 1) . '>' . $other;
     }
@@ -197,7 +198,7 @@ class PAGET_TermWidget extends PAGET_Widget {
 
     
     if ($this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition')) {
-      if (strlen($info) == 0 && strlen(intro) > 0) {
+      if (strlen($info) == 0 && strlen($intro) > 0) {
         $info = $intro . lcfirst($this->desc->get_first_literal($resource_uri, 'http://www.w3.org/2004/02/skos/core#definition', ''));
       }
       else {

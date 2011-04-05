@@ -230,7 +230,6 @@ class PAGET_SimpleInferencer {
               } 
               $chains[$so2['s']][] = array($so2['o']);
             }
-            
             $chains = $this->_extend_chains($chains);
 
             $inferred_properties[$p] = array();
@@ -262,30 +261,35 @@ class PAGET_SimpleInferencer {
   function _extend_chains(&$chains) {
     $new_chains = array();
     foreach ($chains as $s => $chain_list) {
+//      echo "Starting with " . $s . "\n";
       foreach($chain_list as $chain) {
         $connecting_resource = $chain[count($chain) - 1];
         if ($connecting_resource != $s) {
-          //echo "Looking if I can build a chain on " . $connecting_resource . "\n";
-          if ( array_key_exists($connecting_resource, $chains) ) {
-            //echo $connecting_resource . " appears to be the start of a chain\n";
+//          echo "Looking if I can build a chain on " . $connecting_resource . "\n";
+          if ( array_key_exists($connecting_resource, $chains) && count($chains[$connecting_resource]) > 1 ) {
+//            echo $connecting_resource . " appears to be the start of a chain\n";
             if (!array_key_exists($s, $new_chains)) {
               $new_chains[$s] = array();
             } 
             foreach ($chains[$connecting_resource] as $tail) {
-              //echo "Connecting $s to " . $tail[0] . "\n";
+//              echo "Connecting $s to " . $tail[0] . "\n";
               $new_chains[$s][] = array_merge($chain,$tail);
             }
           }   
         }
       }
     }   
-    
+
+/* RECURSION IS PROBLEMATIC, NEEDS DEBUGGING    
     if ( count($new_chains) > 0 ) {
       return $this->_extend_chains($new_chains);
     }
     else {
+*/
       return $chains; 
+ /*
     }
+*/
   }
   
 }

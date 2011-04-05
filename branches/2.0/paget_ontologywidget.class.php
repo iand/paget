@@ -51,6 +51,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       $ret .= '<p>' . htmlspecialchars($this->desc->get_first_literal($resource_uri, array('http://purl.org/dc/elements/1.1/rights', 'http://purl.org/dc/terms/rights'))) . '</p>' . "\n";
     }
 
+    $history = '';
     if ( $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#changeNote') || $this->desc->subject_has_property($resource_uri, 'http://www.w3.org/2004/02/skos/core#historyNote' ) || $this->desc->subject_has_property($resource_uri, 'http://purl.org/dc/terms/issued' ) ) {
       $history_widget = new PAGET_HistoryWidget($this->desc, $this->template, $this->urispace);
       $history .= $history_widget->render($resource_info, FALSE, FALSE, $level + 1);
@@ -239,7 +240,7 @@ class PAGET_OntologyWidget extends PAGET_Widget {
   function render_dl_item(&$index, $resource_uri, $properties, $singular_label, $plural_label) {
     if (!array_key_exists($resource_uri, $index)) return;
     $items = array();
-
+    $ret = '';
     foreach ($properties as $p) {
       if (array_key_exists($p, $index[$resource_uri])) {
         foreach ($index[$resource_uri][$p] as $property_info) {

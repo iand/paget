@@ -31,10 +31,10 @@ class PAGET_OntologyWidget extends PAGET_Widget {
       }
     }
 
-    $descriptions = $this->desc->get_literal_triple_values($resource_uri, array('http://purl.org/dc/terms/description', DC_DESCRIPTION, RDFS_COMMENT));
+    $descriptions = $this->desc->get_subject_property_values($resource_uri, array('http://purl.org/dc/terms/description', DC_DESCRIPTION, RDFS_COMMENT));
     if (count($descriptions) > 0) {
       foreach ($descriptions as $description) {
-        $ret .=  '<p>' . htmlspecialchars($description) . '</p>';
+        $ret .=  $this->template->render($description);        
       }
     }
 
